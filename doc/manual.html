@@ -1,0 +1,288 @@
+<! See Copyright Notice in license.html>
+<html>
+<!$Id$>
+
+<head>
+<style type="text/css">
+ul { list-style-type: disc };
+</style>
+</head>
+
+<body bgcolor="#FFFFFF">
+
+<hr>
+
+<center>
+<table border=0 cellspacing=2 cellpadding=2>
+<tr><td align=center><a href="http://www.lua.org">
+<img border=0 alt="The Lua language" src="lua.png"></a>
+<tr><td align=center><big><b>LuaXMLRPC Reference Manual</b></big>
+<tr><td align=center valign=top>A Lua library for Remote Procedure Call over HTTP
+</table>
+</center>
+<p>
+
+<center><small>
+<a href="index.html">home</a> &middot;
+<a href="#data_types">data types</a> &middot;
+<a href="#client">client</a> &middot;
+<a href="#server">server</a> &middot;
+<a href="#toxml">xml elements</a> &middot;
+<a href="#xmlrpc_parser">xml-rpc parser</a> &middot;
+<a href="#examples">example</a> &middot;
+<a href="#related_docs">related docs</a>
+</small></center>
+<p>
+
+<hr>
+
+<a name="introduction"></a>
+<h2>Introduction</h2>
+
+<p>
+LuaXMLRPC is a <a href="http://www.lua.org">Lua</a> library
+to manage <a href="http://www.xmlrpc.com">XML-RPC</a> clients and servers.
+It enables a Lua program to:
+<ul>
+  <li> Make a remote procedure call to a XML-RPC server
+	without having to deal with XML code
+  <li> Register Lua functions/scripts ??????
+	to respond to remote procedure calls
+  <li> Transform Lua objects into XML-RPC data types and vice-versa
+</ul>
+
+<p>
+LuaXMLRPC provides simple API and an abstraction layer over XML
+avoiding manipulation of string representation of data structures.
+It also offers ways to express everything when needed.
+<p>
+The library is divided into four Lua files:
+<ul>
+  <li> <b><code>xmlrpc.lua</code></b> basic support:
+	build client requests and server responses;
+	and disassemble client requests and server responses.
+  <li> <b><code>toxml.lua</code></b> convert Lua objects to XML
+  <li> <b><code>xrp.lua</code></b> parse XML-RPC objects to Lua
+</ul>
+<p>
+LuaXMLRPC is based on
+<a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a>,
+<a href="http://poison.les.inf.puc-rio.br/luaexpat">LuaExpat</a>
+and on <a href="http://www.lua.org">Lua 5.0</a>.
+
+
+<a name="data_types"></a>
+<h2>Data types</h2>
+<p>
+XML-RPC elements are usually represented by the simplest correspondent
+Lua object.
+When the correspondance is not obvious,
+a Lua table is used with a field specifying the element.
+
+
+<a name="xr2lua"</a>
+<h3>From XML-RPC to Lua</h3>
+<p>
+When converting from XML-RPC element to a Lua object,
+a table with a field <code>tag</code> is used.
+The child elements are stored at numbered indexes
+and white space is ignored.
+<table border="1">
+  <tr>
+    <td>XML-RPC data type
+    <td>Lua object
+  </tr>
+  <tr>
+    <td>double<br>int<br>i4
+    <td>number
+  </tr>
+  <tr>
+    <td>string
+    <td>string
+  </tr>
+  <tr>
+    <td>boolean
+    <td>boolean
+  </tr>
+  <tr>
+    <td>struct<br>arrray
+    <td>table
+  </tr>
+  <tr>
+    <td>other elements
+    <td><pre>{
+  tag = "element name",
+  [1] = &lt;first child&gt;,
+  [2] = &lt;second child&gt;,
+  [3] = ...,
+}</pre>
+  </tr>
+</table>
+
+
+<a name="lua2xr"</a>
+<h3>From Lua to XML-RPC</h3>
+<p>
+A convertion from a Lua object to an XML-RPC can be made automatically
+or explicitly.
+The automatic conversion rules are:
+<table border="1">
+  <tr>
+    <td>Lua object
+    <td>XML-RPC data type
+  </tr>
+  <tr>
+    <td>number
+    <td>double
+  </tr>
+  <tr>
+    <td>string
+    <td>string
+  </tr>
+  <tr>
+    <td>boolean
+    <td>boolean
+  </tr>
+  <tr>
+    <td><code>{ key = val }</code>
+    <td><pre>
+&lt;struct&gt;
+  &lt;member&gt;
+    &lt;name&gt;key&lt;/name&gt;
+    &lt;value&gt;<i>val</i>&lt;/value&gt;
+  &lt;/member&gt;
+&lt;/struct&gt;</pre>
+      <small><i>val</i> is converted according to the same rules.</small>
+  </tr>
+</table>
+In case of a table that has numeric keys,
+the resulting struct will have numbers as keys (but they will be
+treated as strings).
+
+<p>
+Explicit conversions can be forced by the creation of <i>typed values</i>
+(see function <code><a href="#createtypedvalue">createTypedValue</a></code>).
+
+
+<a name="basic"></a>
+<h2>Basic support</h2>
+<p>
+<ul>
+  <a name="client_encode"></a>
+  <li> <b><code>client_encode (method_name, params*) => method_call</code></b> <br>
+    Build a XML-RPC document containing a <code>methodCall</code> element.
+    It receives a string with the method's name and an optional list of
+    parameters.
+    The result is a string containing the XML-RPC document.
+
+  <a name="client_decode"></a>
+  <li> <b><code>client_decode (method_response) => ok, list_results</code></b> <br>
+    Disassemble the server response into a Lua object.
+    It receives a string containing the XML-RPC document representing
+    the <code>methodResponse</code> element.
+    The result is a boolean indicating wether the call was successful or not
+    and a Lua table containing the results of the call,
+    equivalent to the <code>params</code> element.
+
+  <a name="server_decode"></a>
+  <li> <b><code>server_decode (method_call) => method_name, list_params</code></b> <br>
+    Disassemble the client request into a method's name and a Lua object.
+    It receives a string containing the XML-RPC document representing
+    the <code>methodCall</code> element.
+    The result is a string with the name of the method to be called
+    and a Lua table with all the arguments to be passed to it.
+
+  <a name="server_encode"></a>
+  <li> <b><code>server_encode (object) => method_response</code></b> <br>
+    Build a XML-RPC document containing a <code>methodResponse</code> element.
+    It receives a Lua object (a number, a string, a table etc.) with the
+    response of the call to be sent.
+    The result is a string containing the XML-RPC document.
+
+  <a name="createtypedvalue"></a>
+  <li> <b><code>createTypeValue (value, type)</code></b> <br>
+
+</ul>
+
+
+<a name="client"></a>
+<h2>Client side</h2>
+<p>
+The client side library offers the following functions:
+<ul>
+  <a name="call"></a>
+  <li> <b><code>call (url, method, params*)</code></b> <br>
+  Execute the call to <code>method</code> at location <code>url</code>
+  with the given <code>params</code> (if any).
+  The result is a Lua object containing the response.
+  It could be a <code>&lt;params&gt;</code> or a <code>&lt;fault&gt;</code>
+  XML-RPC element.
+
+</ul>
+
+
+<a name="server"></a>
+<h2>Server side</h2>
+<p>
+
+
+<a name="toxml"></a>
+<h2>Creating XML elements</h2>
+<p>
+
+
+<a name="xmlrpc_parser"></a>
+<h2>Parsing XML-RPC elements</h2>
+<p>
+
+
+<a name="examples"></a>
+<h2>Example</h2>
+
+Below is a small sample code displaying the basic use of the library.
+
+<blockquote>
+<pre>
+require "xmlrpc"
+
+
+</pre>
+</blockquote>
+
+
+<a name="related_docs"></a>
+<h2>Related documentation</h2>
+
+Here is a list of related documentation:
+<ul>
+  <li> <a href="http://www.xmlrpc.com">http://www.xmlrpc.com</a>
+</ul>
+
+
+<a name="contents"></a>
+<h2>Contents</h2>
+<p>
+<ul>
+<li> <a href="#introduction">Introduction</a>
+<li> <a href="#examples">Example</a>
+<li> <a href="#related_docs">Related documentation</a>
+</ul>
+</p>
+
+
+<p>
+<center><small>
+<a href="index.html">home</a> &middot;
+<a href="#examples">example</a> &middot;
+<a href="#related_docs">related docs</a>
+</small></center>
+<p>
+
+<hr>
+<small>
+Last modified on
+Mon Sep  1 15:54:23 BRT 2003
+</small>
+
+</body>
+</html> 
