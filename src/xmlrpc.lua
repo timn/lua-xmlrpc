@@ -554,7 +554,7 @@ end
 -- @param obj Lua object.
 -- @param is_fault Boolean indicating wether the result should be
 --	a `fault' element (default = false).
--- @return String with XML-RPC responde.
+-- @return String with XML-RPC response.
 ---------------------------------------------------------------------
 function server_encode (obj, is_fault)
 	local ok = not (is_fault or false)
