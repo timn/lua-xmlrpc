@@ -62,13 +62,17 @@ function call_test (xml_call, method, ...)
 	-- server decoding test
 	local meth_call, param = xmlrpc.server_decode (xml_call)
 	assert (meth_call == method, meth_call)
-	assert (table.equal (arg, param))
+	assert (table.equal (arg, { param }))
 end
 
 function response_test (xml_resp, lua_obj)
 	-- client decoding test
 	local ok, obj = xmlrpc.client_decode (xml_resp)
-	assert (table.equal (obj, { lua_obj }))
+	if type (obj) == "table" then
+		assert (table.equal (obj, lua_obj))
+	else
+		assert (obj == lua_obj)
+	end
 
 	-- server encoding test
 	xml_resp = string.gsub (xml_resp, "(%p)", "%%%1")
@@ -76,6 +80,24 @@ function response_test (xml_resp, lua_obj)
 	local meth_resp = xmlrpc.server_encode (lua_obj)
 	local s = string.gsub (meth_resp, xml_resp, "")
 	s = string.gsub (s, "%s*", "")
+	assert (s == "", s)
+end
+
+function fault_test (xml_resp, message, code)
+	-- client decoding test
+	local ok, str, n = xmlrpc.client_decode (xml_resp)
+	assert (str == message)
+	assert (n == code)
+
+	-- server encoding test
+	xml_resp = string.gsub (xml_resp, "(%p)", "%%%1")
+	xml_resp = string.gsub (xml_resp, "\r?\n%s*", "%%s*")
+	local meth_resp = xmlrpc.server_encode ({ message = message, code = code }, true)
+	local s = string.gsub (meth_resp, xml_resp, "")
+	s = string.gsub (s, "%s*", "")
+if s ~= "" then
+print(meth_resp,"!!!",xml_resp)
+end
 	assert (s == "", s)
 end
 
@@ -200,3 +222,21 @@ response_test ([[<?xml version="1.0"?>
          </param>
       </params>
    </methodResponse>]], { lowerBound = 18, upperBound = 139 })
+
+fault_test ([[<?xml version="1.0"?>
+<methodResponse>
+    <fault>
+      <value>
+        <struct>
+          <member>
+            <name>faultCode</name>
+            <value><int>1</int></value>
+          </member>
+          <member>
+            <name>faultString</name>
+            <value><string>error string</string></value>
+          </member>
+        </struct>
+      </value>
+    </fault>
+</methodResponse>]], "error string", 1)
