@@ -22,4 +22,4 @@ install:
 	cp xmlrpc.lua http.lua cgi.lua $(LUA_DIR)/xmlrpc
 
 clean:
-	rm $(TAR_FILE) $(ZIP_FILE)
+	rm -f $(TAR_FILE) $(ZIP_FILE)
