@@ -38,7 +38,7 @@ ul { list-style-type: disc };
 
 <p>
 LuaXMLRPC is a <a href="http://www.lua.org">Lua</a> library
-to manage <a href="http://www.xmlrpc.com">XML-RPC</a> clients and servers.
+to build <a href="http://www.xmlrpc.com">XML-RPC</a> clients and servers.
 It enables a Lua program to:
 <ul>
   <li> Encode and decode XML-RPC messages
@@ -206,7 +206,9 @@ Explicit conversions can be forced by the creation of <i>typed values</i>
     The result is a string containing the XML-RPC document.
 
   <a name="createtypedvalue"></a>
-  <li> <b><code>createTypedValue (value, type)</code></b> <br>
+  <li> <b><code>createTypedValue (object, type) => object</code></b> <br>
+    Build a Lua object with the XML-RPC representation of the Lua value
+    given according to the given <i>type</i>.
 
 </ul>
 
