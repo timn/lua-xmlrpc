@@ -362,3 +362,5 @@ fault_test ([[<?xml version="1.0"?>
       </value>
     </fault>
 </methodResponse>]], "error string", 1)
+
+print("Ok!")

@@ -5,7 +5,7 @@
 ---------------------------------------------------------------------
 
 require "lxp"
-require "lom"
+require "lxp/lom"
 
 local assert, error, ipairs, pairs, type, tonumber, unpack = assert, error, ipairs, pairs, type, tonumber, unpack
 local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
