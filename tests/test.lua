@@ -62,7 +62,7 @@ function call_test (xml_call, method, ...)
 	-- server decoding test
 	local meth_call, param = xmlrpc.server_decode (xml_call)
 	assert (meth_call == method, meth_call)
-	assert (table.equal (arg, { param }))
+	assert (table.equal (arg, param))
 end
 
 function response_test (xml_resp, lua_obj)

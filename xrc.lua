@@ -5,7 +5,7 @@ require"xmlrpc"
 
 ---------------------------------------------------------------------
 function respond (resp)
-		io.stdout:write (string.format ([[Date: %s
+	io.stdout:write (string.format ([[Date: %s
 Server: Me
 Content-Type: text/xml
 Content-Length: %d
@@ -31,9 +31,22 @@ end
 -- Main
 ---------------------------------------------------------------------
 
+local kepler_home = "http://www.keplerproject.org"
+local kepler_products = { "luasql", "lualdap", "luaexpat", "luaxmlrpc", }
+local kepler_sites = {
+	luasql = kepler_home.."/luasql",
+	lualdap = kepler_home.."/lualdap",
+	luaexpat = kepler_home.."/luaexpat",
+	luaxmlrpc = kepler_home.."/luaxmlrpc",
+}
+
 xmlrpc.server_methods {
 	system = {
 		listMethods = function () return { "system.listMethods" } end,
+	},
+	kepler = {
+		products = function () return kepler_products end,
+		site = function (prod) return kepler_sites[prod] end,
 	},
 }
 

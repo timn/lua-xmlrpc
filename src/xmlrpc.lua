@@ -172,8 +172,8 @@ local x2param, x2fault
 -- Disassemble a methodResponse into a Lua object.
 -- @param tab Table with DOM representation.
 -- @return Boolean (indicating wether the response was successful)
---	and (a Lua table with the return values OR the fault string and
---	the fault code).
+--	and (a Lua object representing the return values OR the fault
+--	string and the fault code).
 ---------------------------------------------------------------------
 local function x2methodResponse (tab)
 	assert (type(tab) == "table", "Not a table")
@@ -181,7 +181,7 @@ local function x2methodResponse (tab)
 		"Not a `methodResponse' tag: "..tab.tag)
 	local t = next_nonspace (tab, 1)
 	if t.tag == "params" then
-		return true, x2param (t)
+		return true, unpack (x2param (t))
 	elseif t.tag == "fault" then
 		local f = x2fault (t)
 		return false, f.faultString, f.faultCode
@@ -235,7 +235,7 @@ x2param = function (tab)
 		end
 		p, i = next_nonspace (tab, i+1)
 	end
-	return res[1]
+	return res
 end
 
 ---------------------------------------------------------------------
@@ -525,7 +525,7 @@ end
 -- Convert the method response document to a Lua table.
 -- @param meth_resp String with XML document.
 -- @return Boolean indicating whether the call was successful or not;
---	and a Lua table with the converted response element.
+--	and a Lua object with the converted response element.
 ---------------------------------------------------------------------
 function client_decode (meth_resp)
 	local d = parse (meth_resp)
@@ -539,7 +539,7 @@ end
 -- Convert the method call (client request) document to a name and
 --	a list of parameters.
 -- @param request String with XML document.
--- @return String with method's name AND a table with the parameters.
+-- @return String with method's name AND the table of arguments.
 ---------------------------------------------------------------------
 function server_decode (request)
 	local d = parse (request)
