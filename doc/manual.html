@@ -17,7 +17,7 @@ ul { list-style-type: disc };
 <tr><td align=center><a href="http://www.lua.org">
 <img border=0 alt="The Lua language" src="lua.png"></a>
 <tr><td align=center><big><b>LuaXMLRPC Reference Manual</b></big>
-<tr><td align=center valign=top>A Lua library for Remote Procedure Call over HTTP
+<tr><td align=center valign=top>A Lua library for XMLRPC
 </table>
 </center>
 <p>
@@ -27,8 +27,6 @@ ul { list-style-type: disc };
 <a href="#data_types">data types</a> &middot;
 <a href="#client">client</a> &middot;
 <a href="#server">server</a> &middot;
-<a href="#toxml">xml elements</a> &middot;
-<a href="#xmlrpc_parser">xml-rpc parser</a> &middot;
 <a href="#examples">example</a> &middot;
 <a href="#related_docs">related docs</a>
 </small></center>
@@ -44,31 +42,40 @@ LuaXMLRPC is a <a href="http://www.lua.org">Lua</a> library
 to manage <a href="http://www.xmlrpc.com">XML-RPC</a> clients and servers.
 It enables a Lua program to:
 <ul>
-  <li> Make a remote procedure call to a XML-RPC server
+  <li> Encode and decode XML-RPC messages
 	without having to deal with XML code
-  <li> Register Lua functions/scripts ??????
-	to respond to remote procedure calls
   <li> Transform Lua objects into XML-RPC data types and vice-versa
 </ul>
 
 <p>
-LuaXMLRPC provides simple API and an abstraction layer over XML
+LuaXMLRPC provides a simple API and an abstraction layer over XML
 avoiding manipulation of string representation of data structures.
 It also offers ways to express everything when needed.
 <p>
-The library is divided into four Lua files:
+<!--
+The distribution contains a set of Lua files:
 <ul>
   <li> <b><code>xmlrpc.lua</code></b> basic support:
-	build client requests and server responses;
-	and disassemble client requests and server responses.
-  <li> <b><code>toxml.lua</code></b> convert Lua objects to XML
-  <li> <b><code>xrp.lua</code></b> parse XML-RPC objects to Lua
+    encode and decode messages from both client and server
+  <li> <b><code>xrh.lua</code></b> XML-RPC over HTTP:
+    provides higher level functions that work over HTTP protocol
+  <li> <b><code>xrc.lua</code></b> XML-RPC over CGI:
+    a CGI script that implements a XML-RPC server
 </ul>
 <p>
+-->
 LuaXMLRPC is based on
-<a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a>,
 <a href="http://poison.les.inf.puc-rio.br/luaexpat">LuaExpat</a>
-and on <a href="http://www.lua.org">Lua 5.0</a>.
+and on
+<a href="http://www.lua.org">Lua 5.0</a>.<br>
+
+<!--
+The abstraction over HTTP (<code>xrh.lua</code>) depends on
+<a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a>.<br>
+
+The abstraction over CGI (<code>xrc.lua</code>) depends on
+POST parser...........
+-->
 
 
 <a name="data_types"></a>
@@ -200,7 +207,7 @@ Explicit conversions can be forced by the creation of <i>typed values</i>
     The result is a string containing the XML-RPC document.
 
   <a name="createtypedvalue"></a>
-  <li> <b><code>createTypeValue (value, type)</code></b> <br>
+  <li> <b><code>createTypedValue (value, type)</code></b> <br>
 
 </ul>
 
@@ -221,31 +228,21 @@ The client side library offers the following functions:
 </ul>
 
 
-<a name="server"></a>
-<h2>Server side</h2>
-<p>
-
-
-<a name="toxml"></a>
-<h2>Creating XML elements</h2>
-<p>
-
-
-<a name="xmlrpc_parser"></a>
-<h2>Parsing XML-RPC elements</h2>
-<p>
-
-
 <a name="examples"></a>
 <h2>Example</h2>
 
-Below is a small sample code displaying the basic use of the library.
+Below is a small sample code displaying the use of the library
+in a client application.
 
 <blockquote>
 <pre>
 require "xmlrpc"
+require "luasocket"
+require "xrh"
 
-
+local ok, res = xrh.call ("http://www.oreillynet.com/meerkat/xml-rpc/server.php", "system.listMethods")
+print (ok)
+for i, v in pairs(res) do print ('\t', i, v) end
 </pre>
 </blockquote>
 
@@ -273,6 +270,9 @@ Here is a list of related documentation:
 <p>
 <center><small>
 <a href="index.html">home</a> &middot;
+<a href="#data_types">data types</a> &middot;
+<a href="#client">client</a> &middot;
+<a href="#server">server</a> &middot;
 <a href="#examples">example</a> &middot;
 <a href="#related_docs">related docs</a>
 </small></center>
@@ -281,7 +281,7 @@ Here is a list of related documentation:
 <hr>
 <small>
 Last modified on
-Mon Sep  1 15:54:23 BRT 2003
+Tue Dec  9 14:52:18 BRST 2003
 </small>
 
 </body>
