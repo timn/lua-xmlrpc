@@ -10,7 +10,7 @@ dist:
 	mkdir $(PKG)
 	cp $(SRCS) $(PKG)
 	tar -czf $(TAR_FILE) $(PKG)
-	zip -lq $(ZIP_FILE) $(PKG)
+	zip -lq $(ZIP_FILE) $(PKG)/*
 	rm -rf $(PKG)
 
 clean:
