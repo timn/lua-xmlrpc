@@ -332,7 +332,7 @@ end
 -- @return String.
 ---------------------------------------------------------------------
 function toxml.number (v, t)
-	local tt = type(t) == "table" and t["*type"]
+	local tt = (type(t) == "table") and t["*type"]
 	if tt == "int" or tt == "i4" then
 		return toxml.int (v, t)
 	elseif tt == "double" then
