@@ -3,10 +3,23 @@
 
 require"xmlrpc"
 
+---------------------------------------------------------------------
+function respond (resp)
+		io.stdout:write (string.format ([[Date: %s
+Server: Me
+Content-Type: text/xml
+Content-Length: %d
+Connection: close
+
+%s
+]], os.date(), string.len(resp), resp))
+end
+
+---------------------------------------------------------------------
 local _assert = assert
 function assert (cond, msg)
 	if not cond then
-		io.stdout:write (xmlrpc.server_encode (
+		respond (xmlrpc.server_encode (
 			{ code = 2, message = msg, },
 			true
 		))
@@ -14,21 +27,38 @@ function assert (cond, msg)
 	end
 end
 
-local doc = parsepostdata ()
+---------------------------------------------------------------------
+-- Main
+---------------------------------------------------------------------
 
-local method, arg_table = xmlrpc.server_decode (doc)
-assert (type(method) == "string")
-assert (type(arg_table) == "table")
+xmlrpc.server_methods {
+	system = {
+		listMethods = function () return { "system.listMethods" } end,
+	},
+}
+
+local doc = {}
+post.parsedata (doc)
+
+local method, arg_table = xmlrpc.server_decode (doc[1])
+assert (type(method) == "string", "Invalid `method': string expected")
+local t = type(arg_table)
+assert (t == "table" or t == "nil", "Invalid table of arguments: not a table nor nil")
 
 local func = xmlrpc.dispatch (method)
-assert (type(func) == "function")
+assert (type(func) == "function", "Unavailable method")
 
-local result = { pcall (func, unpack (arg_table)) }
+local result = { pcall (func, unpack (arg_table or {})) }
 
 local ok = result[1]
-tremove (result, 1)
 if not ok then
 	result = { code = 3, message = result[2], }
+else
+	table.remove (result, 1)
+	if table.getn (result) == 1 then
+		result = result[1]
+	end
 end
 
-io.stdout:write (xmlrpc.server_encode (result, not ok))
+local r = xmlrpc.server_encode (result, not ok)
+respond (r)
