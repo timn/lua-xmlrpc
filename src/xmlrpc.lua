@@ -166,7 +166,7 @@ local xmlrpc_types = {
 	array = x2array,
 }
 
-local x2param
+local x2param, x2fault
 
 ---------------------------------------------------------------------
 -- Disassemble a methodResponse into a Lua object.
@@ -214,7 +214,7 @@ end
 -- @param tab Table with DOM representation.
 -- @return Object.
 ---------------------------------------------------------------------
-local function x2fault (tab)
+x2fault = function (tab)
 	assert (tab.tag == "fault", "Not a `fault' tag: "..tab.tag)
 	return x2value (next_nonspace (tab))
 end
