@@ -3,7 +3,7 @@ PKG= luaxmlrpc-$(VERSION)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 SRCS= README Makefile \
-	xmlrpc.lua xmlrpc.http.lua xmlrpc.cgi.lua test.lua \
+	xmlrpc.lua http.lua cgi.lua test.lua \
 	index.html manual.html license.html luaxmlrpc.png
 
 dist:
