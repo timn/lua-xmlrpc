@@ -5,16 +5,16 @@
 ---------------------------------------------------------------------
 
 require "lxp"
-require "dom"
+require "lom"
 
 local assert, error, ipairs, pairs, type, tonumber, unpack = assert, error, ipairs, pairs, type, tonumber, unpack
 local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
 local concat, getn, tinsert = table.concat, table.getn, table.insert
 local ceil = math.ceil
-local parse = dom.parse
+local parse = lom.parse
 
 local Public = {}
-setmetatable (Public, {__newindex == function (n)
+setmetatable (Public, {__index = function (n)
 	error ("undeclared variable "..n, 2)
 end})
 
