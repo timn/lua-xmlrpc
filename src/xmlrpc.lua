@@ -461,24 +461,24 @@ function toxml.fault (err)
 		code = err.code
 		message = err.message
 	end
-	return format (formats.fault, toxml.struct {
-		faultCode = { ["*type"] = "int", ["*value"] = code or faultCode or 1 },
-		faultString = message or faultString or "fatal error",
+	return format (formats.fault, toxml.value {
+		faultCode = { ["*type"] = "int", ["*value"] = code or err.faultCode or 1 },
+		faultString = message or err.faultString or "fatal error",
 	})
 end
 
 ---------------------------------------------------------------------
 -- @param ok Boolean indicating if the response was correct or a
 --	fault one.
--- @param params_list Object containing the response contents.
+-- @param params Object containing the response contents.
 -- @return String representing the `methodResponse' XML-RPC element.
 ---------------------------------------------------------------------
-function toxml.methodResponse (ok, params_list)
+function toxml.methodResponse (ok, params)
 	local resp
 	if ok then
-		resp = toxml.params (params_list)
+		resp = toxml.params { params }
 	else
-		resp = toxml.fault (params_list)
+		resp = toxml.fault (params)
 	end
 	return format (formats.methodResponse, resp)
 end
@@ -558,7 +558,7 @@ end
 ---------------------------------------------------------------------
 function server_encode (obj, is_fault)
 	local ok = not (is_fault or false)
-	return toxml.methodResponse (ok, { obj })
+	return toxml.methodResponse (ok, obj)
 end
 
 ---------------------------------------------------------------------
@@ -569,14 +569,14 @@ end
 -- if a function is given, it will be used as the dispatcher.
 -- The given function should return a function.
 ---------------------------------------------------------------------
-local dispatch = error
+dispatch = error
 function server_methods (tab_or_func)
 	local t = type (tab_or_func)
 	if t == "function" then
 		dispatch = tab_or_func
 	elseif t == "table" then
 		dispatch = function (name)
-			local ok, _, obj, method = string.find (name, "^([^.]+)%.(.+)$")
+			local ok, _, obj, method = strfind (name, "^([^.]+)%.(.+)$")
 			if not ok then
 				return tab_or_func[name]
 			else
