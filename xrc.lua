@@ -42,11 +42,11 @@ local kepler_sites = {
 
 xmlrpc.server_methods {
 	system = {
-		listMethods = function () return { "system.listMethods" } end,
+		listMethods = function (self) return { "system.listMethods" } end,
 	},
 	kepler = {
-		products = function () return kepler_products end,
-		site = function (prod) return kepler_sites[prod] end,
+		products = function (self) return kepler_products end,
+		site = function (self, prod) return kepler_sites[prod] end,
 	},
 }
 

@@ -567,7 +567,7 @@ end
 -- If a table is given, it can have one level of objects and then the
 -- methods;
 -- if a function is given, it will be used as the dispatcher.
--- The given function should return a function.
+-- The given function should return a Lua function that implements.
 ---------------------------------------------------------------------
 dispatch = error
 function server_methods (tab_or_func)
@@ -580,7 +580,9 @@ function server_methods (tab_or_func)
 			if not ok then
 				return tab_or_func[name]
 			else
-				return tab_or_func[obj][method]
+				return function (...)
+					return tab_or_func[obj][method] (obj, unpack (arg))
+				end
 			end
 		end
 	else
