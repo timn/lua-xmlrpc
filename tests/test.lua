@@ -92,7 +92,21 @@ function table.equal (t1, t2)
 	--if s1 ~= s2 then
 		--print(s1, "!!!!", s2)
 	--end
-	return s1 == s2
+	return s1 == s2, s1.."!!!"..s2
+end
+
+function remove_type (tab)
+	if type(tab) ~= "table" then
+		return tab
+	elseif tab["*type"] then
+		return tab["*value"]
+	end
+	for i,v in pairs (tab) do
+		if type(v) == "table" then
+			tab[i] = remove_type (v)
+		end
+	end
+	return tab
 end
 
 function call_test (xml_call, method, ...)
@@ -111,27 +125,25 @@ function call_test (xml_call, method, ...)
 	-- server decoding test
 	local meth_call, param = xmlrpc.server_decode (xml_call)
 	assert (meth_call == method, meth_call)
-	for i = 1, table.getn (arg) do
-		if type(arg[i]) == "table" and arg[i]["*type"] then
-			arg[i] = arg[i]["*value"]
-		end
-	end
+	arg = remove_type (arg)
 	assert (table.equal (arg, param))
 end
 
 function response_test (xml_resp, lua_obj)
 	-- client decoding test
 	local ok, obj = xmlrpc.client_decode (xml_resp)
-	if type (obj) == "table" then
-		assert (table.equal (obj, lua_obj))
-	else
-		assert (obj == lua_obj)
-	end
 
 	-- server encoding test
 	xml_resp = string.gsub (xml_resp, "(%p)", "%%%1")
 	xml_resp = string.gsub (xml_resp, "\r?\n%s*", "%%s*")
 	local meth_resp = xmlrpc.server_encode (lua_obj)
+
+	if type (obj) == "table" then
+		lua_obj = remove_type (lua_obj)
+		assert (table.equal (obj, lua_obj))
+	else
+		assert (obj == lua_obj)
+	end
 	local s = string.gsub (meth_resp, xml_resp, "")
 	s = string.gsub (s, "%s*", "")
 	assert (s == "", s)
@@ -165,6 +177,7 @@ call_test ([[<?xml version="1.0"?>
       </params>
    </methodCall>]], "examples.getStateName", 41)
 
+local double_139 = xmlrpc.createTypedValue (139, "double")
 call_test ([[<?xml version="1.0"?>
 <methodCall>
    <methodName>examples.getSomething</methodName>
@@ -174,58 +187,58 @@ call_test ([[<?xml version="1.0"?>
 <struct>
    <member>
       <name>lowerBound</name>
-      <value><int>18</int></value>
+      <value><double>18.2</double></value>
       </member>
    <member>
       <name>upperBound</name>
-      <value><int>139</int></value>
+      <value><double>139</double></value>
       </member>
    </struct>
            </value>
          </param>
       </params>
-   </methodCall>]], "examples.getSomething", { lowerBound = 18, upperBound = 139 })
+   </methodCall>]], "examples.getSomething", { lowerBound = 18.2, upperBound = double_139 })
 
-local int_array = xmlrpc.createArray ("int")
-local int_array_array = xmlrpc.createArray (int_array)
+local double_array = xmlrpc.createArray ("double")
 call_test ([[<?xml version="1.0"?>
 <methodCall>
   <methodName>test</methodName>
     <params>
       <param><value><array><data>
-<value><int>1</int></value>
-<value><int>2</int></value>
-<value><int>3</int></value>
-<value><int>4</int></value>
+<value><double>1</double></value>
+<value><double>2</double></value>
+<value><double>3</double></value>
+<value><double>4</double></value>
 </data></array></value></param>
     </params>
 </methodCall>]],
 	"test", 
-	xmlrpc.createTypedValue ({ 1, 2, 3, 4, }, int_array)
+	xmlrpc.createTypedValue ({ 1, 2, 3, 4, }, double_array)
 )
 
+local double_array_array = xmlrpc.createArray (double_array)
 call_test ([[<?xml version="1.0"?>
 <methodCall>
   <methodName>test</methodName>
     <params>
       <param><value><array><data>
 <value><array><data>
-<value><int>1</int></value>
-<value><int>2</int></value>
-<value><int>3</int></value>
-<value><int>4</int></value>
+<value><double>1</double></value>
+<value><double>2</double></value>
+<value><double>3</double></value>
+<value><double>4</double></value>
 </data></array></value>
 <value><array><data>
-<value><int>11</int></value>
-<value><int>12</int></value>
-<value><int>13</int></value>
-<value><int>14</int></value>
+<value><double>11</double></value>
+<value><double>12</double></value>
+<value><double>13</double></value>
+<value><double>14</double></value>
 </data></array></value>
 <value><array><data>
-<value><int>21</int></value>
-<value><int>22</int></value>
-<value><int>23</int></value>
-<value><int>24</int></value>
+<value><double>21</double></value>
+<value><double>22</double></value>
+<value><double>23</double></value>
+<value><double>24</double></value>
 </data></array></value>
 </data></array></value></param>
     </params>
@@ -237,7 +250,7 @@ call_test ([[<?xml version="1.0"?>
 			{ 11, 12, 13, 14, },
 			{ 21, 22, 23, 24, },
 		},
-		int_array_array
+		double_array_array
 	)
 )
 
@@ -321,17 +334,17 @@ response_test ([[<?xml version="1.0"?>
 <struct>
    <member>
       <name>lowerBound</name>
-      <value><int>18</int></value>
+      <value><double>18.2</double></value>
       </member>
    <member>
       <name>upperBound</name>
-      <value><int>139</int></value>
+      <value><double>139</double></value>
       </member>
    </struct>
            </value>
          </param>
       </params>
-   </methodResponse>]], { lowerBound = 18, upperBound = 139 })
+   </methodResponse>]], { lowerBound = 18.2, upperBound = double_139 })
 
 fault_test ([[<?xml version="1.0"?>
 <methodResponse>
