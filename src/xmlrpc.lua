@@ -235,7 +235,7 @@ x2param = function (tab)
 		end
 		p, i = next_nonspace (tab, i+1)
 	end
-	return res
+	return res[1]
 end
 
 ---------------------------------------------------------------------
