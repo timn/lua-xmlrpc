@@ -2,6 +2,9 @@
 -- $Id$
 
 require"xmlrpc"
+require"post"
+post.setmaxinput (1024 * 1024)
+post.setmaxfilesize (512 * 1024)
 
 ---------------------------------------------------------------------
 function respond (resp)
