@@ -7,7 +7,7 @@ Here goes a small description of the files in the distribution
 
     index.html    -- Home page
     license.html  -- Copyright & License
-    lua.png       -- Lua Logo
+    luaxmlrpc.png -- LuaXMLRPC Logo
     Makefile      -- Makefile for Unix systems
     manual.html   -- Reference manual
     README        -- This file

@@ -13,20 +13,24 @@ ul { list-style-type: disc };
 
 <center>
 <table border=0 cellspacing=2 cellpadding=2>
-<tr><td align=center><a href="http://www.lua.org">
-<img border=0 alt="The Lua language" src="lua.png"></a>
+<tr><td align=center><a href="http://www.keplerproject.org/luaxmlrpc">
+<img border=0 alt="LuaXMLRPC logo" src="luaxmlrpc.png"></a>
 <tr><td align=center><big><b>LuaXMLRPC Reference Manual</b></big>
-<tr><td align=center valign=top>A Lua library for XMLRPC
+<tr><td align=center valign=top>XML-RPC interface to the
+<a href="http://www.lua.org">Lua</a>
+programming language
 </table>
 </center>
 <p>
 
 <center><small>
 <a href="index.html">home</a> &middot;
+<a href="#introduction">introduction</a> &middot;
 <a href="#data_types">data types</a> &middot;
+<a href="#basic">basic</a> &middot;
 <a href="#client">client</a> &middot;
 <a href="#server">server</a> &middot;
-<a href="#examples">example</a> &middot;
+<a href="#examples">examples</a> &middot;
 <a href="#related_docs">related docs</a>
 </small></center>
 <p>
@@ -64,14 +68,13 @@ The distribution contains a set of Lua files:
 <p>
 -->
 LuaXMLRPC is based on
-<a href="http://poison.les.inf.puc-rio.br/luaexpat">LuaExpat</a>
+<a href="http://www.keplerproject.org/luaexpat">LuaExpat</a>
 and on
 <a href="http://www.lua.org">Lua 5.0</a>.<br>
 
+The abstraction layer over HTTP (<code>xrh.lua</code>) depends on
+<a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket 2.0</a>.<br>
 <!--
-The abstraction over HTTP (<code>xrh.lua</code>) depends on
-<a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket</a>.<br>
-
 The abstraction over CGI (<code>xrc.lua</code>) depends on
 POST parser...........
 -->
@@ -129,7 +132,7 @@ and white space is ignored.
 <a name="lua2xr"</a>
 <h3>From Lua to XML-RPC</h3>
 <p>
-A convertion from a Lua object to an XML-RPC can be made automatically
+A conversion from a Lua object to an XML-RPC can be made automatically
 or explicitly.
 The automatic conversion rules are:
 <table border="1">
@@ -139,7 +142,7 @@ The automatic conversion rules are:
   </tr>
   <tr>
     <td>number
-    <td>double
+    <td>int or double
   </tr>
   <tr>
     <td>string
@@ -162,10 +165,10 @@ The automatic conversion rules are:
   </tr>
 </table>
 In case of a table that has numeric keys,
-the resulting struct will have numbers as keys (but they will be
-treated as strings).
-
-<p>
+the resulting struct will have the string representation of these numbers
+as keys (e.g. <code>"1"</code> instead of <code>1</code>).
+The library tries to convert integral numbers to integer types,
+otherwise converting them to floating point numbers.
 Explicit conversions can be forced by the creation of <i>typed values</i>
 (see function <code><a href="#createtypedvalue">createTypedValue</a></code>).
 
@@ -173,6 +176,10 @@ Explicit conversions can be forced by the creation of <i>typed values</i>
 <a name="basic"></a>
 <h2>Basic support</h2>
 <p>
+The file <code>xmlrpc.lua</code> implements all basic support for encoding
+and decoding XML-RPC messages and for transforming data types between the
+two representations.
+Following is the list of functions.
 <ul>
   <a name="client_encode"></a>
   <li> <b><code>client_encode (method_name, params*) => method_call</code></b> <br>
@@ -182,33 +189,66 @@ Explicit conversions can be forced by the creation of <i>typed values</i>
     The result is a string containing the XML-RPC document.
 
   <a name="client_decode"></a>
-  <li> <b><code>client_decode (method_response) => ok, list_results</code></b> <br>
+  <li> <b><code>client_decode (method_response) => ok, results</code></b> <br>
     Disassemble the server response into a Lua object.
     It receives a string containing the XML-RPC document representing
     the <code>methodResponse</code> element.
     The result is a boolean indicating wether the call was successful or not
-    and a Lua table containing the results of the call,
-    equivalent to the <code>params</code> element.
+    followed by the resulting objects (typically a methodResponse has only
+    one value so only one Lua object will be returned).
+    In case of error the <code>false</code> value is followed by the XMLRPC
+    <i>faultString</i> and the <i>faultCode</i>.
+    This values are extracted from the <code>fault</code> element.
 
   <a name="server_decode"></a>
   <li> <b><code>server_decode (method_call) => method_name, list_params</code></b> <br>
-    Disassemble the client request into a method's name and a Lua object.
+    Disassemble the client request into a method's name and a table with
+    the list of parameters.
     It receives a string containing the XML-RPC document representing
     the <code>methodCall</code> element.
     The result is a string with the name of the method to be called
-    and a Lua table with all the arguments to be passed to it.
+    and a Lua table with the arguments to the call.
 
   <a name="server_encode"></a>
-  <li> <b><code>server_encode (object) => method_response</code></b> <br>
+  <li> <b><code>server_encode (object, is_fault) => method_response</code></b> <br>
     Build a XML-RPC document containing a <code>methodResponse</code> element.
-    It receives a Lua object (a number, a string, a table etc.) with the
-    response of the call to be sent.
+    It receives a Lua object (a number, a string, a table, a "created typed
+    value" etc.) with the return value of the call.
     The result is a string containing the XML-RPC document.
+    Note that XML-RPC defines that a response only returns <i>one</i> value
+    so a Lua function that returns more than one value has to <i>pack</i> them
+    into a table to guarantee that all of them will be returned.
+    The second parameter (<code>is_fault</code>) can be used to force a
+    <code>fault</code> element to be generated instead of a <code>params</code>.
+    In this case, the Lua object must be a table with the members
+    <code>faultCode</code> and <code>faultString</code>.
 
   <a name="createtypedvalue"></a>
   <li> <b><code>createTypedValue (object, type) => object</code></b> <br>
-    Build a Lua object with the XML-RPC representation of the Lua value
-    given according to the given <i>type</i>.
+    Build a Lua object with the XML-RPC representation of the Lua
+    <code>object</code> given according to the given <code>type</code>.
+
+  <a name="createarray"></a>
+  <li> <b><code>createArray (elemtype) => type</code></b> <br>
+    Build an array type for use with
+    <a href="createtypedvalue">createTypedValue</a>
+    function.
+    The <code>elemtype</code> can be one of the basic XML-RPC types or
+    a constructed one.
+
+  <a name="server_methods"></a>
+  <li> <b><code>server_methods (tab_or_func)</code></b> <br>
+    Register the methods on the server.
+    The parameter can be a table or a dispatching function.
+    If a <i>table</i> is given it can have one level of objects with the
+    corresponding methods.
+    If a <i>function</i> is given, it will replace the dispatcher.
+
+  <a name="dispatch"></a>
+  <li> <b><code>dispatch (method_name) => function</code></b> <br>
+    Returns a Lua function that implements the method call.
+    Note that the object is encapsulated into that function so that the
+    call will be turned into a real method call.
 
 </ul>
 
@@ -216,36 +256,160 @@ Explicit conversions can be forced by the creation of <i>typed values</i>
 <a name="client"></a>
 <h2>Client side</h2>
 <p>
-The client side library offers the following functions:
+The file <code>xrh.lua</code> implements a simple client side library
+based on <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket 2.0</a>.
+The following function is provided:
 <ul>
   <a name="call"></a>
   <li> <b><code>call (url, method, params*)</code></b> <br>
   Execute the call to <code>method</code> at location <code>url</code>
   with the given <code>params</code> (if any).
-  The result is a Lua object containing the response.
-  It could be a <code>&lt;params&gt;</code> or a <code>&lt;fault&gt;</code>
-  XML-RPC element.
+  The result is a boolean indicating whether the call was successful or
+  not, followed by the response value (if successful) or by the faultString
+  and the faultCode (if the call fails).
 
 </ul>
 
 
+<a name="server"></a>
+<h2>Server side</h2>
+<p>
+The distribution also offers a simple XML-RPC server implemented
+over a CGI launcher.
+This launcher just have to offer a way to decode POST data and to
+send data back to the client.
+</p>
+<p>
+The file <code>xrc.lua</code> implements a simple XML-RPC server
+using the package <code>post</code> that can parse incoming POST data
+from the http server.
+An appropriate environment for writing Lua functions is implemented;
+a new <code>assert</code> function generates a XML-RPC fault in case
+of a false condition;
+a <code>respond</code> function creates the correct header for the
+responses.
+</p>
+<p>
+The main goal of this file is to give a starting point for other real
+implementations.
+</p>
+
+
 <a name="examples"></a>
-<h2>Example</h2>
+<h2>Examples</h2>
+
+<a name="client_example"></a>
+<h3>Client example</h3>
 
 Below is a small sample code displaying the use of the library
 in a client application.
 
 <blockquote>
-<pre>
-require "xmlrpc"
-require "luasocket"
-require "xrh"
+<pre>require "xrh"
 
 local ok, res = xrh.call ("http://www.oreillynet.com/meerkat/xml-rpc/server.php", "system.listMethods")
 print (ok)
 for i, v in pairs(res) do print ('\t', i, v) end
 </pre>
 </blockquote>
+
+<a name="types_example"></a>
+<h3>Type conversion example</h3>
+
+The next example shows how to force the conversion of types from Lua to
+XML-RPC.
+
+<blockquote>
+<pre>require "xmlrpc"
+
+double_array_type = xmlrpc.createArray ("double")
+double_array = xmlrpc.createTypedValue ( { 1.1, 2, 3, 4 }, double_array_type)
+
+double_array_array_type = xmlrpc.createArray (double_array_type)
+double_array_array = xmlrpc.createTypedValue (
+{
+	{ 11, 12, 13, },
+	{ 21, 22, 23, },
+	{ 31, 32, 33, },
+}, double_array_array_type)
+</pre>
+</blockquote>
+
+The table <code>double_array_array</code> will be:
+
+<blockquote>
+<pre>&lt;array&gt;
+  &lt;data&gt;
+    &lt;value&gt;
+      &lt;array&gt;
+        &lt;data&gt;
+          &lt;value&gt;&lt;double&gt;11&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;12&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;13&lt;/double&gt;&lt;/value&gt;
+        &lt;/data&gt;
+      &lt;/array&gt;
+    &lt;/value&gt;
+    &lt;value&gt;
+      &lt;array&gt;
+        &lt;data&gt;
+          &lt;value&gt;&lt;double&gt;21&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;22&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;23&lt;/double&gt;&lt;/value&gt;
+        &lt;/data&gt;
+      &lt;/array&gt;
+    &lt;/value&gt;
+    &lt;value&gt;
+      &lt;array&gt;
+        &lt;data&gt;
+          &lt;value&gt;&lt;double&gt;31&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;32&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;33&lt;/double&gt;&lt;/value&gt;
+        &lt;/data&gt;
+      &lt;/array&gt;
+    &lt;/value&gt;
+  &lt;/data&gt;
+&lt;/array&gt;
+</pre>
+</blockquote>
+
+<a name="server_example"></a>
+<h3>Server example</h3>
+
+Follow a small example of a server based on a cgi launcher.
+
+<blockquote>
+<pre>require "xrc"
+
+local kepler_home = "http://www.keplerproject.org"
+local kepler_products = { "luasql", "lualdap", "luaexpat", "luaxmlrpc", }
+local kepler_sites = {
+	luasql = kepler_home.."/luasql",
+	lualdap = kepler_home.."/lualdap",
+	luaexpat = kepler_home.."/luaexpat",
+	luaxmlrpc = kepler_home.."/luaxmlrpc",
+}
+-- Register methods
+xmlrpc.server_methods {
+	kepler = {
+		products = function (self) return kepler_products end,
+		site = function (self, prod) return kepler_sites[prod] end,
+	}
+}
+-- Parse POST data
+local doc = {}
+post.parsedata (doc)
+-- Decode method call
+local method, arg_table = xmlrpc.server_decode (doc[1])
+local func = xmlrpc.dispatch (method)
+local ok, result, err = pcall (func, unpack (arg_table or {}))
+if ok then
+	result = { code = 3, message = result, }
+end
+respond (xmlrpc.server_encode (result, not ok)
+</pre>
+</blockquote>
+Note that the package <code>post</code> and the function <code>respond</code>
+should be provided by the cgi launcher.
 
 
 <a name="related_docs"></a>
@@ -262,7 +426,33 @@ Here is a list of related documentation:
 <p>
 <ul>
 <li> <a href="#introduction">Introduction</a>
-<li> <a href="#examples">Example</a>
+<li> <a href="#data_types">Data types</a>
+  <ul>
+    <li> <a href="#xr2lua">From XML-RPC to Lua</a>
+    <li> <a href="#lua2xr">From Lua to XML-RPC</a>
+  </ul>
+<li> <a href="#basic">Basic support</a>
+  <ul>
+    <li> <a href="#client_encode">client_encode</a>
+    <li> <a href="#client_decode">client_decode</a>
+    <li> <a href="#server_encode">server_encode</a>
+    <li> <a href="#server_decode">server_decode</a>
+    <li> <a href="#createtypedvalue">createTypedValue</a>
+    <li> <a href="#createarray">createArray</a>
+    <li> <a href="#server_methods">server_methods</a>
+    <li> <a href="#dispatch">dispatch</a>
+  </ul>
+<li> <a href="#client">Client side</a>
+  <ul>
+    <li> <a href="#call">call</a>
+  </ul>
+<li> <a href="#server">Server side</a>
+<li> <a href="#examples">Examples</a>
+  <ul>
+    <li> <a href="#client_example">Client example</a>
+    <li> <a href="#types_example">Type conversion example</a>
+    <li> <a href="#server_example">Server example</a>
+  </ul>
 <li> <a href="#related_docs">Related documentation</a>
 </ul>
 </p>
@@ -271,10 +461,12 @@ Here is a list of related documentation:
 <p>
 <center><small>
 <a href="index.html">home</a> &middot;
+<a href="#introduction">introduction</a> &middot;
 <a href="#data_types">data types</a> &middot;
+<a href="#basic">basic</a> &middot;
 <a href="#client">client</a> &middot;
 <a href="#server">server</a> &middot;
-<a href="#examples">example</a> &middot;
+<a href="#examples">examples</a> &middot;
 <a href="#related_docs">related docs</a>
 </small></center>
 <p>

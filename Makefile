@@ -4,7 +4,7 @@ TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 SRCS= README Makefile \
 	xmlrpc.lua xrh.lua xrc.lua test.lua \
-	index.html manual.html license.html lua.png
+	index.html manual.html license.html luaxmlrpc.png
 
 dist:
 	mkdir $(PKG)
