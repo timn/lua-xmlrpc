@@ -4,7 +4,7 @@
 -- $Id$
 ---------------------------------------------------------------------
 
-require"luasocket"
+require"socket"
 require"xmlrpc"
 
 local post = socket.http.post

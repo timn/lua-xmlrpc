@@ -5,22 +5,15 @@
 ---------------------------------------------------------------------
 
 require "lxp"
-require "lxp/lom"
+require "lxp.lom"
 
 local assert, error, ipairs, pairs, type, tonumber, unpack = assert, error, ipairs, pairs, type, tonumber, unpack
 local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
 local concat, getn, tinsert = table.concat, table.getn, table.insert
 local ceil = math.ceil
-local parse = lom.parse
+local parse = lxp.lom.parse
 
-local Public = {}
-setmetatable (Public, {__index = function (n)
-	error ("undeclared variable "..n, 2)
-end})
-
-xmlrpc = Public
-
-setfenv (1, Public)
+module (arg and arg[1])
 
 ---------------------------------------------------------------------
 -- XML-RPC Parser
