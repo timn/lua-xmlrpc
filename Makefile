@@ -1,3 +1,4 @@
+LUA_DIR= /usr/local/share/lua/5.0
 VERSION= 1.0a
 PKG= luaxmlrpc-$(VERSION)
 DIST_DIR= $(PKG)
@@ -15,6 +16,10 @@ dist: dist_dir
 dist_dir:
 	mkdir $(DIST_DIR)
 	cp $(SRCS) $(DIST_DIR)
+
+install:
+	mkdir -p $(LUA_DIR)/xmlrpc
+	cp xmlrpc.lua http.lua cgi.lua $(LUA_DIR)/xmlrpc
 
 clean:
 	rm $(TAR_FILE) $(ZIP_FILE)
