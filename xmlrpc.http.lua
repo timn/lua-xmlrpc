@@ -9,7 +9,7 @@ require"xmlrpc"
 
 local post = socket.http.post
 
-xrh = {}
+xmlrpc.http = {}
 
 ---------------------------------------------------------------------
 -- Call a remote method.
@@ -18,17 +18,17 @@ xrh = {}
 -- @return Table with the response (could be a `fault' or a `params'
 --	XML-RPC element).
 ---------------------------------------------------------------------
-function xrh.call (url, method, ...)
+function xmlrpc.http.call (url, method, ...)
 	local body, headers, code, err = post {
 		url = url,
-		body = xmlrpc.client_encode (method, unpack (arg)),
+		body = xmlrpc.clEncode (method, unpack (arg)),
 		headers = {
 			["User-agent"] = "LuaXMLRPC",
 			["Content-type"] = "text/xml",
 		},
 	}
 	if tonumber (code) == 200 then
-		return xmlrpc.client_decode (body)
+		return xmlrpc.clDecode (body)
 	else
 		error (err or code)
 	end

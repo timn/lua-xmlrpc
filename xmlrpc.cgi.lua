@@ -22,7 +22,7 @@ end
 local _assert = assert
 function assert (cond, msg)
 	if not cond then
-		respond (xmlrpc.server_encode (
+		respond (xmlrpc.srvEncode (
 			{ code = 2, message = msg, },
 			true
 		))
@@ -43,7 +43,7 @@ local kepler_sites = {
 	luaxmlrpc = kepler_home.."/luaxmlrpc",
 }
 
-xmlrpc.server_methods {
+xmlrpc.srvMethods {
 	system = {
 		listMethods = function (self) return { "system.listMethods" } end,
 	},
@@ -56,7 +56,7 @@ xmlrpc.server_methods {
 local doc = {}
 post.parsedata (doc)
 
-local method, arg_table = xmlrpc.server_decode (doc[1])
+local method, arg_table = xmlrpc.srvDecode (doc[1])
 assert (type(method) == "string", "Invalid `method': string expected")
 local t = type(arg_table)
 assert (t == "table" or t == "nil", "Invalid table of arguments: not a table nor nil")
@@ -76,5 +76,5 @@ else
 	end
 end
 
-local r = xmlrpc.server_encode (result, not ok)
+local r = xmlrpc.srvEncode (result, not ok)
 respond (r)

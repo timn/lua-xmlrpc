@@ -2,7 +2,6 @@
 -- See Copyright Notice in license.html
 
 require "xmlrpc"
-require "xrh"
 
 function table._print (tab, indent, spacing)
 	spacing = spacing or ""
@@ -116,14 +115,14 @@ function call_test (xml_call, method, ...)
 	arg.n = nil
 
 	-- client enconding test
-	local meth_call = xmlrpc.client_encode (method, unpack (arg))
+	local meth_call = xmlrpc.clEncode (method, unpack (arg))
 	meth_call = string.gsub (meth_call, "%s*", "")
 	local s = string.gsub (meth_call, xc, "")
 	s = string.gsub (s, "%s*", "")
 	assert (s == "", s.."\n!!!\n"..xc)
 
 	-- server decoding test
-	local meth_call, param = xmlrpc.server_decode (xml_call)
+	local meth_call, param = xmlrpc.srvDecode (xml_call)
 	assert (meth_call == method, meth_call)
 	arg = remove_type (arg)
 	assert (table.equal (arg, param))
@@ -131,12 +130,12 @@ end
 
 function response_test (xml_resp, lua_obj)
 	-- client decoding test
-	local ok, obj = xmlrpc.client_decode (xml_resp)
+	local ok, obj = xmlrpc.clDecode (xml_resp)
 
 	-- server encoding test
 	xml_resp = string.gsub (xml_resp, "(%p)", "%%%1")
 	xml_resp = string.gsub (xml_resp, "\r?\n%s*", "%%s*")
-	local meth_resp = xmlrpc.server_encode (lua_obj)
+	local meth_resp = xmlrpc.srvEncode (lua_obj)
 
 	if type (obj) == "table" then
 		lua_obj = remove_type (lua_obj)
@@ -151,14 +150,14 @@ end
 
 function fault_test (xml_resp, message, code)
 	-- client decoding test
-	local ok, str, n = xmlrpc.client_decode (xml_resp)
+	local ok, str, n = xmlrpc.clDecode (xml_resp)
 	assert (str == message)
 	assert (n == code)
 
 	-- server encoding test
 	xml_resp = string.gsub (xml_resp, "(%p)", "%%%1")
 	xml_resp = string.gsub (xml_resp, "\r?\n%s*", "%%s*")
-	local meth_resp = xmlrpc.server_encode ({ message = message, code = code }, true)
+	local meth_resp = xmlrpc.srvEncode ({ message = message, code = code }, true)
 	local s = string.gsub (meth_resp, xml_resp, "")
 	s = string.gsub (s, "%s*", "")
 	assert (s == "", s)
@@ -177,7 +176,7 @@ call_test ([[<?xml version="1.0"?>
       </params>
    </methodCall>]], "examples.getStateName", 41)
 
-local double_139 = xmlrpc.createTypedValue (139, "double")
+local double_139 = xmlrpc.newTypedValue (139, "double")
 call_test ([[<?xml version="1.0"?>
 <methodCall>
    <methodName>examples.getSomething</methodName>
@@ -199,7 +198,7 @@ call_test ([[<?xml version="1.0"?>
       </params>
    </methodCall>]], "examples.getSomething", { lowerBound = 18.2, upperBound = double_139 })
 
-local double_array = xmlrpc.createArray ("double")
+local double_array = xmlrpc.newArray ("double")
 call_test ([[<?xml version="1.0"?>
 <methodCall>
   <methodName>test</methodName>
@@ -213,10 +212,10 @@ call_test ([[<?xml version="1.0"?>
     </params>
 </methodCall>]],
 	"test", 
-	xmlrpc.createTypedValue ({ 1, 2, 3, 4, }, double_array)
+	xmlrpc.newTypedValue ({ 1, 2, 3, 4, }, double_array)
 )
 
-local double_array_array = xmlrpc.createArray (double_array)
+local double_array_array = xmlrpc.newArray (double_array)
 call_test ([[<?xml version="1.0"?>
 <methodCall>
   <methodName>test</methodName>
@@ -244,7 +243,7 @@ call_test ([[<?xml version="1.0"?>
     </params>
 </methodCall>]],
 	"test",
-	xmlrpc.createTypedValue (
+	xmlrpc.newTypedValue (
 		{
 			{ 1, 2, 3, 4, },
 			{ 11, 12, 13, 14, },
@@ -304,13 +303,13 @@ call_test ([[<?xml version="1.0"?>
 </methodCall>]],
 	"insertTable",
 	"people",
-	xmlrpc.createTypedValue (
+	xmlrpc.newTypedValue (
 		{
 			{ name = "Fulano", email = "fulano@nowhere.world", },
 			{ name = "Beltrano", email = "beltrano@nowhere.world", },
 			{ name = "Cicrano", email = "cicrano@nowhere.world", },
 		},
-		xmlrpc.createArray ("struct")
+		xmlrpc.newArray ("struct")
 	)
 )
 

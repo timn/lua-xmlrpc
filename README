@@ -5,15 +5,15 @@ The standalone server depends on LuaSocket for Lua 5.0 also.
 
 Here goes a small description of the files in the distribution
 
-    index.html    -- Home page
-    license.html  -- Copyright & License
-    luaxmlrpc.png -- LuaXMLRPC Logo
-    Makefile      -- Makefile for Unix systems
-    manual.html   -- Reference manual
-    README        -- This file
-    test.lua      -- Overall API test script
-    xmlrpc.lua    -- Source file
-    xrc.lua       -- Extension server library over CGI
-    xrh.lua       -- Extension server library over HTTP
+    index.html       -- Home page
+    license.html     -- Copyright & License
+    luaxmlrpc.png    -- LuaXMLRPC Logo
+    Makefile         -- Makefile for Unix systems
+    manual.html      -- Reference manual
+    README           -- This file
+    test.lua         -- Overall API test script
+    xmlrpc.lua       -- Source file
+    xmlrpc.http.lua  -- Extension library over HTTP
+    xmlrpc.cgi.lua   -- Server implementation over CGI
 
 $Id$

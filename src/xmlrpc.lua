@@ -491,14 +491,14 @@ end
 ---------------------------------------------------------------------
 -- Create a representation of an array with the given element type.
 ---------------------------------------------------------------------
-function createArray (elemtype)
+function newArray (elemtype)
 	return { type = "array", elemtype = elemtype, }
 end
 
 ---------------------------------------------------------------------
 -- Create a representation of a structure with the given members.
 ---------------------------------------------------------------------
-function createStruct (members)
+function newStruct (members)
 	return { type = "struct", elemtype = members, }
 end
 
@@ -507,7 +507,7 @@ end
 -- @param val Any Lua value.
 -- @param typ A XML-RPC type.
 ---------------------------------------------------------------------
-function createTypedValue (val, typ)
+function newTypedValue (val, typ)
 	return { ["*type"] = typ, ["*value"] = val }
 end
 
@@ -517,7 +517,7 @@ end
 -- @param ... Parameters to the call.
 -- @return String with the XML string/document.
 ---------------------------------------------------------------------
-function client_encode (method, ...)
+function clEncode (method, ...)
 	return toxml.methodCall (method, arg)
 end
 
@@ -527,7 +527,7 @@ end
 -- @return Boolean indicating whether the call was successful or not;
 --	and a Lua object with the converted response element.
 ---------------------------------------------------------------------
-function client_decode (meth_resp)
+function clDecode (meth_resp)
 	local d = parse (meth_resp)
 	if type(d) ~= "table" then
 		error ("Not an XML document: "..meth_resp)
@@ -541,7 +541,7 @@ end
 -- @param request String with XML document.
 -- @return String with method's name AND the table of arguments.
 ---------------------------------------------------------------------
-function server_decode (request)
+function srvDecode (request)
 	local d = parse (request)
 	if type(d) ~= "table" then
 		error ("Not an XML document: "..request)
@@ -556,7 +556,7 @@ end
 --	a `fault' element (default = false).
 -- @return String with XML-RPC response.
 ---------------------------------------------------------------------
-function server_encode (obj, is_fault)
+function srvEncode (obj, is_fault)
 	local ok = not (is_fault or false)
 	return toxml.methodResponse (ok, obj)
 end
@@ -570,7 +570,7 @@ end
 -- The given function should return a Lua function that implements.
 ---------------------------------------------------------------------
 dispatch = error
-function server_methods (tab_or_func)
+function srvMethods (tab_or_func)
 	local t = type (tab_or_func)
 	if t == "function" then
 		dispatch = tab_or_func
