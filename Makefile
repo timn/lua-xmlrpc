@@ -1,5 +1,5 @@
 LUA_DIR= /usr/local/share/lua/5.0
-VERSION= 1.0a
+VERSION= 1.0b
 PKG= luaxmlrpc-$(VERSION)
 DIST_DIR= $(PKG)
 TAR_FILE= $(PKG).tar.gz
@@ -10,7 +10,7 @@ SRCS= README Makefile \
 
 dist: dist_dir
 	tar -czf $(TAR_FILE) $(DIST_DIR)
-	zip -lq $(ZIP_FILE) $(DIST_DIR)/*
+	zip -rq $(ZIP_FILE) $(DIST_DIR)/*
 	rm -rf $(DIST_DIR)
 
 dist_dir:
