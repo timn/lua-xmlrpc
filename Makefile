@@ -1,12 +1,12 @@
 LUA_DIR= /usr/local/share/lua/5.0
-VERSION= 1.0b
+VERSION= 1.0.0
 PKG= luaxmlrpc-$(VERSION)
 DIST_DIR= $(PKG)
 TAR_FILE= $(PKG).tar.gz
 ZIP_FILE= $(PKG).zip
 SRCS= README Makefile \
-	xmlrpc.lua http.lua cgi.lua test.lua \
-	index.html manual.html license.html luaxmlrpc.png
+	src/xmlrpc.lua src/http.lua src/cgi.lua tests/test.lua \
+	doc/us/index.html doc/us/manual.html doc/us/license.html doc/us/luaxmlrpc.png
 
 dist: dist_dir
 	tar -czf $(TAR_FILE) $(DIST_DIR)
@@ -19,7 +19,7 @@ dist_dir:
 
 install:
 	mkdir -p $(LUA_DIR)/xmlrpc
-	cp xmlrpc.lua http.lua cgi.lua $(LUA_DIR)/xmlrpc
+	cp src/xmlrpc.lua src/http.lua src/cgi.lua $(LUA_DIR)/xmlrpc
 
 clean:
 	rm -f $(TAR_FILE) $(ZIP_FILE)
