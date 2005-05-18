@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+	<title>LuaXMLRPC: XML-RPC interface to the Lua programming language</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="LuaXMLRPC logo" src="luaxmlrpc.png"/>
+	</a></div>
+	<div id="product_name"><big><b>LuaXMLRPC</b></big></div>
+	<div id="product_description">XML-RPC interface to the Lua programming language</div>
+</div> <!-- id="product" -->
+
+<div id="main">
+	
+<div id="navigation">
+<h1>LuaXMLRPC</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact</a></li>
+			</ul>
+		</li>
+		<li><a href="manual.html">Manual</a>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#data_types">Data types</a></li>
+				<li><a href="manual.html#basic">Basic support</a></li>
+				<li><a href="manual.html#client">Client side</a></li>
+				<li><a href="manual.html#server">Server side</a></li>
+				<li><a href="manual.html#references">References</a></li>
+			</ul>
+		</li>
+		<li><strong>Examples</strong></li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
+
+<div id="content">
+
+
+<h2><a name="examples"></a>Examples</h2>
+
+<h3><a name="client_example"></a>Client example</h3>
+
+Below is a small sample code displaying the use of the library in a
+client application. 
+
+<pre class="example">
+require "xmlrpc.http"
+
+local ok, res = xmlrpc.http.call (
+	"http://www.oreillynet.com/meerkat/xml-rpc/server.php", 
+	"system.listMethods")
+print (ok)
+for i, v in pairs(res) do print ('\t', i, v) end
+</pre>
+
+
+<h3><a name="types_example"></a>Type conversion example</h3>
+
+The next example shows how to force the conversion of types from
+Lua to XML-RPC. 
+
+<pre class="example">
+require "xmlrpc"
+
+double_array_type = xmlrpc.newArray ("double")
+double_array = xmlrpc.newTypedValue ( { 1.1, 2, 3, 4 }, double_array_type)
+
+double_array_array_type = xmlrpc.newArray (double_array_type)
+double_array_array = xmlrpc.newTypedValue (
+{
+    { 11, 12, 13, },
+    { 21, 22, 23, },
+    { 31, 32, 33, },
+}, double_array_array_type)
+</pre>
+
+The table <code>double_array_array</code> will be: 
+
+<pre class="example">
+&lt;array&gt;
+  &lt;data&gt;
+    &lt;value&gt;
+      &lt;array&gt;
+        &lt;data&gt;
+          &lt;value&gt;&lt;double&gt;11&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;12&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;13&lt;/double&gt;&lt;/value&gt;
+        &lt;/data&gt;
+      &lt;/array&gt;
+    &lt;/value&gt;
+    &lt;value&gt;
+      &lt;array&gt;
+        &lt;data&gt;
+          &lt;value&gt;&lt;double&gt;21&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;22&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;23&lt;/double&gt;&lt;/value&gt;
+        &lt;/data&gt;
+      &lt;/array&gt;
+    &lt;/value&gt;
+    &lt;value&gt;
+      &lt;array&gt;
+        &lt;data&gt;
+          &lt;value&gt;&lt;double&gt;31&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;32&lt;/double&gt;&lt;/value&gt;
+          &lt;value&gt;&lt;double&gt;33&lt;/double&gt;&lt;/value&gt;
+        &lt;/data&gt;
+      &lt;/array&gt;
+    &lt;/value&gt;
+  &lt;/data&gt;
+&lt;/array&gt;
+</pre>
+
+
+
+<h3><a name="server_example"></a>Server example</h3>
+
+Follow a small example of a server based on a cgi launcher. 
+
+<pre class="example">
+require "xmlrpc.cgi"
+
+local kepler_home = "http://www.keplerproject.org"
+local kepler_products = { "luasql", "lualdap", "luaexpat", "luaxmlrpc", }
+local kepler_sites = {
+    luasql = kepler_home.."/luasql",
+    lualdap = kepler_home.."/lualdap",
+    luaexpat = kepler_home.."/luaexpat",
+    luaxmlrpc = kepler_home.."/luaxmlrpc",
+}
+-- Register methods
+xmlrpc.srvMethods {
+    kepler = {
+        products = function (self) return kepler_products end,
+        site = function (self, prod) return kepler_sites[prod] end,
+    }
+}
+-- Parse POST data
+local doc = {}
+post.parsedata (doc)
+-- Decode method call
+local method, arg_table = xmlrpc.srvDecode (doc[1])
+local func = xmlrpc.dispatch (method)
+local ok, result, err = pcall (func, unpack (arg_table or {}))
+if ok then
+    result = { code = 3, message = result, }
+end
+respond (xmlrpc.srvEncode (result, not ok)
+</pre>
+
+<p>
+Note that the package <code>post</code> and the function
+<code>respond</code> should be provided by the cgi launcher.
+</p>
+
+</div> <!-- id="content" -->
+
+</div> <!-- id="main" -->
+
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+	<p><small>
+	$Id$
+	</small></p>
+</div> <!-- id="about" -->
+
+</div> <!-- id="container" -->
+
+</body>
+</html> 

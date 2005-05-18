@@ -1,46 +1,58 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html>
 <head>
-<meta name="generator" content="HTML Tidy, see www.w3.org">
-<title>LuaXMLRPC: XML-RPC interface to the Lua programming
-language</title>
-<style type="text/css">
-ul { list-style-type: disc };
-</style>
+	<title>LuaXMLRPC: XML-RPC interface to the Lua programming language</title>
+    <link rel="stylesheet" href="http://www.keplerproject.org/doc.css" type="text/css"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 </head>
-<body bgcolor="#FFFFFF">
-<hr>
-<center>
-<table border="0" cellspacing="2" cellpadding="2">
-<tr>
-<td align="center"><a href=
-"http://www.keplerproject.org/luaxmlrpc"><img border="0" alt=
-"LuaXMLRPC logo" src="luaxmlrpc.png"></a> </td>
-</tr>
+<body>
 
-<tr>
-<td align="center"><big><b>LuaXMLRPC Reference Manual</b></big>
-</td>
-</tr>
+<div id="container">
+	
+<div id="product">
+	<div id="product_logo"><a href="http://www.keplerproject.org">
+		<img alt="LuaXMLRPC logo" src="luaxmlrpc.png"/>
+	</a></div>
+	<div id="product_name"><big><b>LuaXMLRPC</b></big></div>
+	<div id="product_description">XML-RPC interface to the Lua programming language</div>
+</div> <!-- id="product" -->
 
-<tr>
-<td align="center" valign="top">XML-RPC interface to the <a href=
-"http://www.lua.org">Lua</a> programming language</td>
-</tr>
-</table>
-</center>
+<div id="main">
+	
+<div id="navigation">
+<h1>LuaXMLRPC</h1>
+	<ul>
+		<li><a href="index.html">Home</a>
+			<ul>
+				<li><a href="index.html#overview">Overview</a></li>
+				<li><a href="index.html#status">Status</a></li>
+				<li><a href="index.html#download">Download</a></li>
+				<li><a href="index.html#history">History</a></li>
+				<li><a href="index.html#credits">Credits</a></li>
+				<li><a href="index.html#contact">Contact</a></li>
+			</ul>
+		</li>
+		<li><strong>Manual</strong>
+			<ul>
+				<li><a href="manual.html#introduction">Introduction</a></li>
+				<li><a href="manual.html#installation">Installation</a></li>
+				<li><a href="manual.html#data_types">Data types</a></li>
+				<li><a href="manual.html#basic">Basic support</a></li>
+				<li><a href="manual.html#client">Client side</a></li>
+				<li><a href="manual.html#server">Server side</a></li>
+				<li><a href="manual.html#references">References</a></li>
+			</ul>
+		</li>
+		<li><a href="examples.html">Examples</a></li>
+		<li><a href="license.html">License</a></li>
+	</ul>
+</div> <!-- id="navigation" -->
 
-<center><small><a href="index.html">home</a> &middot; <a href=
-"#introduction">introduction</a> &middot; <a href=
-"#data_types">data types</a> &middot; <a href="#basic">basic</a>
-&middot; <a href="#client">client</a> &middot; <a href=
-"#server">server</a> &middot; <a href="#examples">examples</a>
-&middot; <a href="#related_docs">related docs</a></small></center>
+<div id="content">
 
-<hr>
-<a name="introduction"></a> 
 
-<h2>Introduction</h2>
+<h2><a name="introduction"></a>Introduction</h2>
 
 <p>LuaXMLRPC is a <a href="http://www.lua.org">Lua</a> library to
 build <a href="http://www.xmlrpc.com">XML-RPC</a> clients and
@@ -62,19 +74,38 @@ structures.
 
 <p>LuaXMLRPC is based on <a href=
 "http://www.keplerproject.org/luaexpat">LuaExpat</a> and on <a
-href="http://www.lua.org">Lua 5.0</a>.<br>
+href="http://www.lua.org">Lua 5.0</a>.
  The abstraction layer over HTTP depends on <a href=
-"http://www.tecgraf.puc-rio.br/luasocket">LuaSocket 2.0</a>.<br>
- <a name="data_types"></a></p>
+"http://www.tecgraf.puc-rio.br/luasocket">LuaSocket 2.0</a>.
+</p>
 
-<h2>Data types</h2>
+<h2><a name="installation"></a>Installation</h2>
+
+<p>LuaXMLRPC is composed by three Lua files.
+These files should be
+copied to a directory named <code>xmlrpc</code> created in your
+<code>LUA_PATH</code>.</p>
+
+<p>
+LuaXMLRPC follows the
+<a href="http://www.keplerproject.org/compat">package proposal</a>
+for Lua 5.1, therefore this package should be "installed".
+In other words,
+if you are using Lua 5.0, the files <tt>compat-5.1.c</tt> and
+<tt>compat-5.1.h</tt> must be used in the compilation and the file
+<tt>compat-5.1.lua</tt> must be installed in the <tt>LUA_PATH</tt>.
+If you are using Lua 5.1, nothing should be done.
+</p>
+
+
+
+<h2><a name="data_types"></a>Data types</h2>
 
 <p>XML-RPC elements are usually represented by the simplest
 correspondent Lua object. When the correspondance is not obvious, a
-Lua table is used with a field specifying the element. <a name=
-"xr2lua"></a></p>
+Lua table is used with a field specifying the element.</p>
 
-<h3>From XML-RPC to Lua</h3>
+<h3><a name="xr2lua"></a>From XML-RPC to Lua</h3>
 
 <p>When converting from XML-RPC element to a Lua object, a table
 with a field <code>tag</code> is used. The child elements are
@@ -124,9 +155,8 @@ arrray</td>
 </tr>
 </table>
 
-<a name="lua2xr"></a> 
 
-<h3>From Lua to XML-RPC</h3>
+<h3><a name="lua2xr"></a>From Lua to XML-RPC</h3>
 
 <p>A conversion from a Lua object to an XML-RPC can be made
 automatically or explicitly. The automatic conversion rules
@@ -170,6 +200,7 @@ are:</p>
 </tr>
 </table>
 
+<p>
 In case of a table that has numeric keys, the resulting struct will
 have the string representation of these numbers as keys (e.g.
 <code>"1"</code> instead of <code>1</code>). The library tries to
@@ -178,9 +209,9 @@ them to floating point numbers. <!--
 Explicit conversions can be forced by the creation of <i>typed values</i>
 (see function <code><a href="#newtypedvalue">newTypedValue</a></code>).
 -->
- <a name="basic"></a> 
+</p>
 
-<h2>Basic support</h2>
+<h2><a name="basic"></a>Basic support</h2>
 
 <p>The file <code>xmlrpc.lua</code> implements all basic support
 for encoding and decoding XML-RPC messages and for transforming
@@ -261,9 +292,8 @@ the object is encapsulated into that function so that the call will
 be turned into a real method call.</li>
 </ul>
 
-<a name="client"></a> 
 
-<h2>Client side</h2>
+<h2><a name="client"></a>Client side</h2>
 
 <p>The file <code>xmlrpc.http.lua</code> implements a simple
 stand-alone client based on <a href=
@@ -289,9 +319,8 @@ response value (if successful) or by the <i>faultString</i> and the
 </li>
 </ul>
 
-<a name="server"></a> 
 
-<h2>Server side</h2>
+<h2><a name="server"></a>Server side</h2>
 
 <p>The distribution also offers a simple XML-RPC server implemented
 over a CGI launcher. This launcher just have to offer a way to
@@ -308,213 +337,29 @@ responses.</p>
 <p>The main goal of this file is to give a starting point for other
 real implementations.</p>
 
-<a name="examples"></a> 
 
-<h2>Examples</h2>
+<h2><a name="references"></a>References</h2>
 
-<a name="client_example"></a> 
-
-<h3>Client example</h3>
-
-Below is a small sample code displaying the use of the library in a
-client application. 
-
-<blockquote>
-<pre>
-require "xmlrpc.http"
-
-local ok, res = xmlrpc.http.call ("http://www.oreillynet.com/meerkat/xml-rpc/server.php", "system.listMethods")
-print (ok)
-for i, v in pairs(res) do print ('\t', i, v) end
-</pre>
-</blockquote>
-
-<a name="types_example"></a> 
-
-<h3>Type conversion example</h3>
-
-The next example shows how to force the conversion of types from
-Lua to XML-RPC. 
-
-<blockquote>
-<pre>
-require "xmlrpc"
-
-double_array_type = xmlrpc.newArray ("double")
-double_array = xmlrpc.newTypedValue ( { 1.1, 2, 3, 4 }, double_array_type)
-
-double_array_array_type = xmlrpc.newArray (double_array_type)
-double_array_array = xmlrpc.newTypedValue (
-{
-    { 11, 12, 13, },
-    { 21, 22, 23, },
-    { 31, 32, 33, },
-}, double_array_array_type)
-</pre>
-</blockquote>
-
-The table <code>double_array_array</code> will be: 
-
-<blockquote>
-<pre>
-&lt;array&gt;
-  &lt;data&gt;
-    &lt;value&gt;
-      &lt;array&gt;
-        &lt;data&gt;
-          &lt;value&gt;&lt;double&gt;11&lt;/double&gt;&lt;/value&gt;
-          &lt;value&gt;&lt;double&gt;12&lt;/double&gt;&lt;/value&gt;
-          &lt;value&gt;&lt;double&gt;13&lt;/double&gt;&lt;/value&gt;
-        &lt;/data&gt;
-      &lt;/array&gt;
-    &lt;/value&gt;
-    &lt;value&gt;
-      &lt;array&gt;
-        &lt;data&gt;
-          &lt;value&gt;&lt;double&gt;21&lt;/double&gt;&lt;/value&gt;
-          &lt;value&gt;&lt;double&gt;22&lt;/double&gt;&lt;/value&gt;
-          &lt;value&gt;&lt;double&gt;23&lt;/double&gt;&lt;/value&gt;
-        &lt;/data&gt;
-      &lt;/array&gt;
-    &lt;/value&gt;
-    &lt;value&gt;
-      &lt;array&gt;
-        &lt;data&gt;
-          &lt;value&gt;&lt;double&gt;31&lt;/double&gt;&lt;/value&gt;
-          &lt;value&gt;&lt;double&gt;32&lt;/double&gt;&lt;/value&gt;
-          &lt;value&gt;&lt;double&gt;33&lt;/double&gt;&lt;/value&gt;
-        &lt;/data&gt;
-      &lt;/array&gt;
-    &lt;/value&gt;
-  &lt;/data&gt;
-&lt;/array&gt;
-</pre>
-</blockquote>
-
-<a name="server_example"></a> 
-
-<h3>Server example</h3>
-
-Follow a small example of a server based on a cgi launcher. 
-
-<blockquote>
-<pre>
-require "xmlrpc.cgi"
-
-local kepler_home = "http://www.keplerproject.org"
-local kepler_products = { "luasql", "lualdap", "luaexpat", "luaxmlrpc", }
-local kepler_sites = {
-    luasql = kepler_home.."/luasql",
-    lualdap = kepler_home.."/lualdap",
-    luaexpat = kepler_home.."/luaexpat",
-    luaxmlrpc = kepler_home.."/luaxmlrpc",
-}
--- Register methods
-xmlrpc.srvMethods {
-    kepler = {
-        products = function (self) return kepler_products end,
-        site = function (self, prod) return kepler_sites[prod] end,
-    }
-}
--- Parse POST data
-local doc = {}
-post.parsedata (doc)
--- Decode method call
-local method, arg_table = xmlrpc.srvDecode (doc[1])
-local func = xmlrpc.dispatch (method)
-local ok, result, err = pcall (func, unpack (arg_table or {}))
-if ok then
-    result = { code = 3, message = result, }
-end
-respond (xmlrpc.srvEncode (result, not ok)
-</pre>
-</blockquote>
-
-Note that the package <code>post</code> and the function
-<code>respond</code> should be provided by the cgi launcher. <a
-name="related_docs"></a> 
-
-<h2>Related documentation</h2>
-
+<p>
 Here is a list of related documentation: 
+</p>
 
 <ul>
 <li><a href="http://www.xmlrpc.com">http://www.xmlrpc.com</a></li>
 </ul>
 
-<a name="contents"></a> 
+</div> <!-- id="content" -->
 
-<h2>Contents</h2>
+</div> <!-- id="main" -->
 
-<ul>
-<li><a href="#introduction">Introduction</a></li>
+<div id="about">
+	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
+	<p><small>
+	$Id$
+	</small></p>
+</div> <!-- id="about" -->
 
-<li><a href="#data_types">Data types</a> 
+</div> <!-- id="container" -->
 
-<ul>
-<li><a href="#xr2lua">From XML-RPC to Lua</a></li>
-
-<li><a href="#lua2xr">From Lua to XML-RPC</a></li>
-</ul>
-</li>
-
-<li><a href="#basic">Basic support</a> 
-
-<ul>
-<li><a href="#clEncode">clEncode</a></li>
-
-<li><a href="#clDecode">clDecode</a></li>
-
-<li><a href="#srvEncode">srvEncode</a></li>
-
-<li><a href="#srvDecode">srvDecode</a></li>
-
-<li><a href="#newtypedvalue">newTypedValue</a></li>
-
-<li><a href="#newarray">newArray</a></li>
-
-<li><a href="#srvMethods">srvMethods</a></li>
-
-<li><a href="#dispatch">dispatch</a></li>
-</ul>
-</li>
-
-<li><a href="#client">Client side</a> 
-
-<ul>
-<li><a href="#call">call</a></li>
-</ul>
-</li>
-
-<li><a href="#server">Server side</a></li>
-
-<li><a href="#examples">Examples</a> 
-
-<ul>
-<li><a href="#client_example">Client example</a></li>
-
-<li><a href="#types_example">Type conversion example</a></li>
-
-<li><a href="#server_example">Server example</a></li>
-</ul>
-</li>
-
-<li><a href="#related_docs">Related documentation</a></li>
-</ul>
-
-<br>
-<br>
- 
-
-<center><small><a href="index.html">home</a> &middot; <a href=
-"#introduction">introduction</a> &middot; <a href=
-"#data_types">data types</a> &middot; <a href="#basic">basic</a>
-&middot; <a href="#client">client</a> &middot; <a href=
-"#server">server</a> &middot; <a href="#examples">examples</a>
-&middot; <a href="#related_docs">related docs</a></small></center>
-
-<hr>
-<small>$Id$</small>
 </body>
-</html>
-
+</html> 
