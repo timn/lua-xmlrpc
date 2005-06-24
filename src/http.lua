@@ -4,12 +4,13 @@
 -- $Id$
 ---------------------------------------------------------------------
 
-require"socket"
+require"socket.http"
+require"ltn12"
 require"xmlrpc"
 
-local post = socket.http.post
+local request = socket.http.request
 
-xmlrpc.http = {}
+module("xmlrpc.http")
 
 ---------------------------------------------------------------------
 -- Call a remote method.
@@ -18,18 +19,24 @@ xmlrpc.http = {}
 -- @return Table with the response (could be a `fault' or a `params'
 --	XML-RPC element).
 ---------------------------------------------------------------------
-function xmlrpc.http.call (url, method, ...)
-	local body, headers, code, err = post {
+function call (url, method, ...)
+	local request_sink, tbody = ltn12.sink.table()
+	local request_body = xmlrpc.clEncode(method, unpack (arg))
+	local err, code, headers, status = request {
 		url = url,
-		body = xmlrpc.clEncode (method, unpack (arg)),
+		method = "POST",
+		source = ltn12.source.string (request_body),
+		sink = request_sink,
 		headers = {
 			["User-agent"] = "LuaXMLRPC",
 			["Content-type"] = "text/xml",
+			["content-length"] = tostring (string.len (request_body)),
 		},
 	}
+	local body = table.concat (tbody)
 	if tonumber (code) == 200 then
 		return xmlrpc.clDecode (body)
 	else
-		error (err or code)
+		error (tostring (err or code).."\n\n"..tostring(body))
 	end
 end
