@@ -2,7 +2,7 @@
 
 LUA_DIR= /usr/local/share/lua/5.0
 
-LUAS= src/xmlrpc.lua src/http.lua src/cgi.lua
+LUAS= src/xmlrpc.lua src/http.lua src/cgi.lua src/server.lua
 
 
 build clean:
