@@ -11,10 +11,12 @@
 <div id="container">
 	
 <div id="product">
-	<div id="product_logo"><a href="http://www.keplerproject.org">
+	<div id="product_logo">
+    <a href="http://www.keplerproject.org">
 		<img alt="LuaXMLRPC logo" src="luaxmlrpc.png"/>
-	</a></div>
-	<div id="product_name"><big><b>LuaXMLRPC</b></big></div>
+	</a>
+    </div>
+	<div id="product_name"><big><strong>LuaXMLRPC</strong></big></div>
 	<div id="product_description">XML-RPC interface to the Lua programming language</div>
 </div> <!-- id="product" -->
 
@@ -51,7 +53,6 @@
 
 <div id="content">
 
-
 <h2><a name="introduction"></a>Introduction</h2>
 
 <p>LuaXMLRPC is a <a href="http://www.lua.org">Lua</a> library to
@@ -59,45 +60,30 @@ build <a href="http://www.xmlrpc.com">XML-RPC</a> clients and
 servers. It enables a Lua program to:</p>
 
 <ul>
-<li>Encode and decode XML-RPC messages without having to deal with
-XML code</li>
-
-<li>Transform Lua objects into XML-RPC data types and
-vice-versa</li>
+    <li>Encode and decode XML-RPC messages without having to deal with XML code</li>
+    <li>Transform Lua objects into XML-RPC data types and vice-versa</li>
 </ul>
 
-<p>LuaXMLRPC provides a simple API and an abstraction layer over
-XML avoiding manipulation of string representation of data
-structures. 
-<!--It also offers ways to express everything when needed.-->
-</p>
+<p>LuaXMLRPC provides a simple API and an abstraction layer over XML avoiding
+manipulation of string representation of data structures.</p>
 
-<p>LuaXMLRPC is based on <a href=
-"http://www.keplerproject.org/luaexpat">LuaExpat</a> and on <a
-href="http://www.lua.org">Lua 5.0</a>.
- The abstraction layer over HTTP depends on <a href=
-"http://www.tecgraf.puc-rio.br/luasocket">LuaSocket 2.0</a>.
-</p>
+<p>LuaXMLRPC is based on
+<a href="http://www.keplerproject.org/luaexpat">LuaExpat</a> and on
+<a href="http://www.lua.org">Lua 5.0</a>.
+The abstraction layer over HTTP depends on
+<a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket 2.0</a>.</p>
 
 <h2><a name="installation"></a>Installation</h2>
 
 <p>LuaXMLRPC is composed by three Lua files.
-These files should be
-copied to a directory named <code>xmlrpc</code> created in your
+These files should be copied to a directory named <code>xmlrpc</code> created in your
 <code>LUA_PATH</code>.</p>
 
-<p>
-LuaXMLRPC follows the
-<a href="http://www.keplerproject.org/compat">package model</a>
-for Lua 5.1, therefore this package should be "installed".
-In other words,
-if you are using Lua 5.0, the files <tt>compat-5.1.c</tt> and
-<tt>compat-5.1.h</tt> must be used in the compilation and the file
-<tt>compat-5.1.lua</tt> must be installed in the <tt>LUA_PATH</tt>.
-If you are using Lua 5.1, nothing should be done.
-</p>
-
-
+<p>LuaXMLRPC follows the
+<a href="http://www.keplerproject.org/compat/">package model</a>
+for Lua 5.1, therefore it should be "installed". Refer to
+<a href="http://www.keplerproject.org/compat/manual.html#configuration">
+Compat-5.1 configuration</a> section about how to install the module properly.</p>
 
 <h2><a name="data_types"></a>Data types</h2>
 
@@ -111,48 +97,50 @@ Lua table is used with a field specifying the element.</p>
 with a field <code>tag</code> is used. The child elements are
 stored at numbered indexes and white space is ignored.</p>
 
-<table border="1">
-<tr>
-<td>XML-RPC data type</td>
-<td>Lua object</td>
-</tr>
+<table>
+    <tr>
+        <th>XML-RPC data type(s)</th>
+        <th>Lua object</th>
+    </tr>
 
-<tr>
-<td>double<br>
-int<br>
-i4</td>
-<td>number</td>
-</tr>
-
-<tr>
-<td>string</td>
-<td>string</td>
-</tr>
-
-<tr>
-<td>boolean</td>
-<td>boolean</td>
-</tr>
-
-<tr>
-<td>struct<br>
-arrray</td>
-<td>table</td>
-</tr>
-
-<tr>
-<td>other elements</td>
-<td>
-<pre>
-{
-  tag = "element name",
-  [1] = &lt;first child&gt;,
-  [2] = &lt;second child&gt;,
-  [3] = ...,
-}
-</pre>
-</td>
-</tr>
+    <tr>
+        <td>
+        double<br />
+        int<br />
+        i4
+        </td>
+        <td>number</td>
+    </tr>
+    
+    <tr>
+        <td>string</td>
+        <td>string</td>
+    </tr>
+    
+    <tr>
+        <td>boolean</td>
+        <td>boolean</td>
+    </tr>
+    
+    <tr>
+        <td>
+        struct<br />
+        arrray
+        </td>
+        <td>table</td>
+    </tr>
+    
+    <tr>
+        <td>other elements</td>
+        <td>
+<pre>{
+    tag = "element name",
+    [1] = &lt;first child&gt;,
+    [2] = &lt;second child&gt;,
+    [3] = ...,
+}</pre>
+        </td>
+    </tr>
 </table>
 
 
@@ -162,54 +150,48 @@ arrray</td>
 automatically or explicitly. The automatic conversion rules
 are:</p>
 
-<table border="1">
-<tr>
-<td>Lua object</td>
-<td>XML-RPC data type</td>
-</tr>
-
-<tr>
-<td>number</td>
-<td>int or double</td>
-</tr>
-
-<tr>
-<td>string</td>
-<td>string</td>
-</tr>
-
-<tr>
-<td>boolean</td>
-<td>boolean</td>
-</tr>
-
-<tr>
-<td><code>{ key = val }</code> </td>
-<td>
+<table>
+    <tr>
+        <th>Lua object</th>
+        <th>XML-RPC data type</th>
+    </tr>
+    
+    <tr>
+        <td>number</td>
+        <td>int or double</td>
+    </tr>
+    
+    <tr>
+        <td>string</td>
+        <td>string</td>
+    </tr>
+    
+    <tr>
+        <td>boolean</td>
+        <td>boolean</td>
+    </tr>
+    
+    <tr>
+        <td><code>{ key = val }</code></td>
+        <td>
 <pre>
 &lt;struct&gt;
   &lt;member&gt;
     &lt;name&gt;key&lt;/name&gt;
-    &lt;value&gt;<i>val</i>&lt;/value&gt;
+    &lt;value&gt;<em>val</em>&lt;/value&gt;
   &lt;/member&gt;
 &lt;/struct&gt;
 </pre>
-
-<small><i>val</i> is converted according to the same rules.</small>
-</td>
-</tr>
+        <small><em>val</em> is converted according to the same rules.</small>
+        </td>
+    </tr>
 </table>
 
-<p>
-In case of a table that has numeric keys, the resulting struct will
+<p>In case of a table that has numeric keys, the resulting struct will
 have the string representation of these numbers as keys (e.g.
 <code>"1"</code> instead of <code>1</code>). The library tries to
 convert integral numbers to integer types, otherwise converting
-them to floating point numbers. <!--
-Explicit conversions can be forced by the creation of <i>typed values</i>
-(see function <code><a href="#newtypedvalue">newTypedValue</a></code>).
--->
-</p>
+them to floating point numbers.</p>
 
 <h2><a name="basic"></a>Basic support</h2>
 
@@ -218,106 +200,76 @@ for encoding and decoding XML-RPC messages and for transforming
 data types between the two representations. Following is the list
 of functions.</p>
 
-<ul>
-<li style="list-style: none"><a name="clEncode"></a></li>
-
-<li><b><code>clEncode (method_name, params*) =&gt;
-method_call</code></b><br>
- Build a XML-RPC document containing a <code>methodCall</code>
-element. It receives a string with the method's name and an
-optional list of parameters. The result is a string containing the
-XML-RPC document. <a name="clDecode"></a></li>
-
-<li><b><code>clDecode (method_response) =&gt; ok,
-results</code></b><br>
- Disassemble the server response into a Lua object. It receives a
-string containing the XML-RPC document representing the
-<code>methodResponse</code> element. The result is a boolean
-indicating wether the call was successful or not followed by the
-resulting objects (typically a methodResponse has only one value so
-only one Lua object will be returned). In case of error the
-<code>false</code> value is followed by the XMLRPC
-<i>faultString</i> and the <i>faultCode</i>. This values are
-extracted from the <code>fault</code> element. <a name=
-"srvDecode"></a></li>
-
-<li><b><code>srvDecode (method_call) =&gt; method_name,
-list_params</code></b><br>
- Disassemble the client request into a method's name and a table
-with the list of parameters. It receives a string containing the
-XML-RPC document representing the <code>methodCall</code> element.
-The result is a string with the name of the method to be called and
-a Lua table with the arguments to the call. <a name=
-"srvEncode"></a></li>
-
-<li><b><code>srvEncode (object, is_fault) =&gt;
-method_response</code></b><br>
- Build a XML-RPC document containing a <code>methodResponse</code>
-element. It receives a Lua object (a number, a string, a table, a
-"created typed value" etc.) with the return value of the call. The
-result is a string containing the XML-RPC document. Note that
-XML-RPC defines that a response only returns <i>one</i> value so a
-Lua function that returns more than one value has to <i>pack</i>
-them into a table to guarantee that all of them will be returned.
-The second parameter (<code>is_fault</code>) can be used to force a
-<code>fault</code> element to be generated instead of a
-<code>params</code>. In this case, the Lua object must be a table
-with the members <code>faultCode</code> and
-<code>faultString</code>. <!--
-  <a name="newtypedvalue"></a>
-  <li> <b><code>newTypedValue (object, type) => object</code></b> <br>
-    Build a Lua object with the XML-RPC representation of the Lua
-    <code>object</code> given according to the given <code>type</code>.
-
-  <a name="newarray"></a>
-  <li> <b><code>newArray (elemtype) => type</code></b> <br>
-    Build an array type for use with
-    <a href="newtypedvalue">newTypedValue</a>
-    function.
-    The <code>elemtype</code> can be one of the basic XML-RPC types or
-    a constructed one.
--->
- <a name="srvMethods"></a></li>
-
-<li><b><code>srvMethods (tab_or_func)</code></b><br>
- Register the methods on the server. The parameter can be a table
-or a dispatching function. If a <i>table</i> is given it can have
-one level of objects with the corresponding methods. If a
-<i>function</i> is given, it will replace the dispatcher. <a name=
-"dispatch"></a></li>
-
-<li><b><code>dispatch (method_name) =&gt; function</code></b><br>
- Returns a Lua function that implements the method call. Note that
-the object is encapsulated into that function so that the call will
-be turned into a real method call.</li>
-</ul>
+<dl>
+    <dt><a name="clEncode"></a><strong><code>clEncode (method_name [, params]) =&gt; method_call</code></strong></dt>
+    <dd>Build a XML-RPC document containing a <code>methodCall</code>
+    element. It receives a string with the method's name and an
+    optional list of parameters. The result is a string containing the
+    XML-RPC document.</dd>
+    
+    <dt><a name="clDecode"></a><strong><code>clDecode (method_response) =&gt; ok, results</code></strong></dt>
+    <dd>Disassemble the server response into a Lua object. It receives a
+    string containing the XML-RPC document representing the
+    <code>methodResponse</code> element. The result is a boolean
+    indicating wether the call was successful or not followed by the
+    resulting objects (typically a methodResponse has only one value so
+    only one Lua object will be returned). In case of error the
+    <code>false</code> value is followed by the XMLRPC
+    <em>faultString</em> and the <em>faultCode</em>. This values are
+    extracted from the <code>fault</code> element.</dd>
+    
+    <dt><a name="srvDecode"></a><strong><code>srvDecode (method_call) =&gt; method_name, list_params</code></strong></dt>
+    <dd>Disassemble the client request into a method's name and a table
+    with the list of parameters. It receives a string containing the
+    XML-RPC document representing the <code>methodCall</code> element.
+    The result is a string with the name of the method to be called and
+    a Lua table with the arguments to the call.</dd>
+    
+    <dt><a name="srvEncode"></a><strong><code>srvEncode (object, is_fault) =&gt; method_response</code></strong></dt>
+    <dd>Build a XML-RPC document containing a <code>methodResponse</code>
+    element. It receives a Lua object (a number, a string, a table, a
+    "created typed value" etc.) with the return value of the call. The
+    result is a string containing the XML-RPC document. Note that
+    XML-RPC defines that a response only returns <em>one</em> value so a
+    Lua function that returns more than one value has to <em>pack</em>
+    them into a table to guarantee that all of them will be returned.
+    The second parameter (<code>is_fault</code>) can be used to force a
+    <code>fault</code> element to be generated instead of a
+    <code>params</code>. In this case, the Lua object must be a table
+    with the members <code>faultCode</code> and
+    <code>faultString</code>.</dd>
+    
+    <dt><a name="srvMethods"></a><strong><code>srvMethods (tab_or_func)</code></strong></dt>
+    <dd>Register the methods on the server. The parameter can be a table
+    or a dispatching function. If a <em>table</em> is given it can have
+    one level of objects with the corresponding methods. If a
+    <em>function</em> is given, it will replace the dispatcher.</dd>
+    
+    <dt><a name="dispatch"></a><strong><code>dispatch (method_name) =&gt; function</code></strong></dt>
+    <dd>Returns a Lua function that implements the method call. Note that
+    the object is encapsulated into that function so that the call will
+    be turned into a real method call.</dd>
+</dl>
 
 
 <h2><a name="client"></a>Client side</h2>
 
 <p>The file <code>xmlrpc.http.lua</code> implements a simple
-stand-alone client based on <a href=
-"http://www.tecgraf.puc-rio.br/luasocket">LuaSocket 2.0</a>. The
+stand-alone client based on
+<a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket 2.0</a>. The
 following function is provided:</p>
 
-<ul>
-<li style="list-style: none"><a name="call"></a></li>
-
-<li><b><code>call (url, method, params*)</code></b><br>
- Execute the call to <code>method</code> at location
-<code>url</code> with the given <code>params</code> (if any). The
-<code>method</code> and <code>params</code> parameters will be just
-passed to <a href="#clEncode">clEncode</a> function. The result is
-the same as <a href="#clDecode">clDecode</a> function: a boolean
-indicating whether the call was successful or not, followed by the
-response value (if successful) or by the <i>faultString</i> and the
-<i>faultCode</i> (if the call fails). <!--
-  The result is a boolean indicating whether the call was successful or
-  not, followed by the response value (if successful) or by the faultString
-  and the faultCode (if the call fails).
--->
-</li>
-</ul>
+<dl>
+    <dt><a name="call"></a><strong><code>call (url, method [, params])</code></strong></dt>
+    <dd>Execute the call to <code>method</code> at location
+    <code>url</code> with the given <code>params</code> (if any). The
+    <code>method</code> and <code>params</code> parameters will be just
+    passed to <a href="#clEncode">clEncode</a> function. The result is
+    the same as <a href="#clDecode">clDecode</a> function: a boolean
+    indicating whether the call was successful or not, followed by the
+    response value (if successful) or by the <em>faultString</em> and the
+    <em>faultCode</em> (if the call fails).</dd>
+</dl>
 
 
 <h2><a name="server"></a>Server side</h2>
@@ -340,12 +292,10 @@ real implementations.</p>
 
 <h2><a name="references"></a>References</h2>
 
-<p>
-Here is a list of related documentation: 
-</p>
+<p>Here is a list of related documentation:</p>
 
 <ul>
-<li><a href="http://www.xmlrpc.com">http://www.xmlrpc.com</a></li>
+    <li><a href="http://www.xmlrpc.com">http://www.xmlrpc.com</a></li>
 </ul>
 
 </div> <!-- id="content" -->
@@ -353,10 +303,12 @@ Here is a list of related documentation:
 </div> <!-- id="main" -->
 
 <div id="about">
-	<p><a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" /></a></p>
-	<p><small>
-	$Id$
-	</small></p>
+	<p>
+    <a href="http://validator.w3.org/check?uri=referer">
+    <img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0!" height="31" width="88" />
+    </a>
+    </p>
+	<p><small>$Id$</small></p>
 </div> <!-- id="about" -->
 
 </div> <!-- id="container" -->
