@@ -15,7 +15,7 @@ local parse = lxp.lom.parse
 
 module (arg and arg[1])
 
-_COPYRIGHT = "Copyright (C) 2003-2005 Kepler Project"
+_COPYRIGHT = "Copyright (C) 2003-2006 Kepler Project"
 _DESCRIPTION = "LuaXMLRPC is a library to make remote procedure calls using XML-RPC"
 _VERSION = "LuaXMLRPC 1.0.0"
 
