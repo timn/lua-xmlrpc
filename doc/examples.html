@@ -162,7 +162,7 @@ local ok, result, err = pcall (func, unpack (arg_table or {}))
 if ok then
     result = { code = 3, message = result, }
 end
-respond (xmlrpc.srvEncode (result, not ok)
+respond (xmlrpc.srvEncode (result, not ok))
 </pre>
 
 <p>Note that the package <code>post</code> and the function
