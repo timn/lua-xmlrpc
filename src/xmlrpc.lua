@@ -76,7 +76,7 @@ end
 local function x2boolean (tab)
 	if tab.tag == "boolean" then
 		local v = next_nonspace (tab, 1)
-		return v == true or v == "true" or false
+		return tonumber (v) == 1 or false
 	end
 end
 
