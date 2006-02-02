@@ -1,4 +1,4 @@
-#!/usr/local/bin/lua.5.0
+#!/usr/local/bin/lua50
 -- See Copyright Notice in license.html
 
 require "xmlrpc"
