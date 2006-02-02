@@ -40,7 +40,7 @@
 				<li><a href="manual.html#introduction">Introduction</a></li>
 				<li><a href="manual.html#installation">Installation</a></li>
 				<li><a href="manual.html#data_types">Data types</a></li>
-				<li><a href="manual.html#basic">Basic support</a></li>
+				<li><a href="manual.html#functions">Library functions</a></li>
 				<li><a href="manual.html#client">Client side</a></li>
 				<li><a href="manual.html#server">Server side</a></li>
 				<li><a href="manual.html#references">References</a></li>
@@ -55,13 +55,13 @@
 
 <h2><a name="introduction"></a>Introduction</h2>
 
-<p>LuaXMLRPC is a <a href="http://www.lua.org">Lua</a> library to
-build <a href="http://www.xmlrpc.com">XML-RPC</a> clients and
+<p>LuaXMLRPC is a <a href="http://www.lua.org">Lua</a> library that can be used 
+to build <a href="http://www.xmlrpc.com">XML-RPC</a> clients and
 servers. It enables a Lua program to:</p>
 
 <ul>
-    <li>Encode and decode XML-RPC messages without having to deal with XML code</li>
-    <li>Transform Lua objects into XML-RPC data types and vice-versa</li>
+    <li>Encode and decode XML-RPC messages without handling XML code</li>
+    <li>Transform Lua data structures into XML-RPC data types and vice-versa</li>
 </ul>
 
 <p>LuaXMLRPC provides a simple API and an abstraction layer over XML avoiding
@@ -75,7 +75,13 @@ The abstraction layer over HTTP depends on
 
 <h2><a name="installation"></a>Installation</h2>
 
-<p>LuaXMLRPC is composed by three Lua files.
+<p>LuaXMLRPC is composed by three Lua files:</p>
+
+<ul>
+    <li><code>xmlrpc.lua</code></li>
+    <li><b>FALTA COLOCAR OS NOMES DOS OUTROS ARQUIVOS</b></li>
+</ul>
+
 These files should be copied to a directory named <code>xmlrpc</code> created in your
 <code>LUA_PATH</code>.</p>
 
@@ -83,7 +89,7 @@ These files should be copied to a directory named <code>xmlrpc</code> created in
 <a href="http://www.keplerproject.org/compat/">package model</a>
 for Lua 5.1, therefore it should be "installed". Refer to
 <a href="http://www.keplerproject.org/compat/manual.html#configuration">
-Compat-5.1 configuration</a> section about how to install the module properly.</p>
+Compat-5.1 configuration</a> section about how to install the module.</p>
 
 <h2><a name="data_types"></a>Data types</h2>
 
@@ -93,8 +99,8 @@ Lua table is used with a field specifying the element.</p>
 
 <h3><a name="xr2lua"></a>From XML-RPC to Lua</h3>
 
-<p>When converting from XML-RPC element to a Lua object, a table
-with a field <code>tag</code> is used. The child elements are
+<p>When converting from XML-RPC element to a Lua data item or table, 
+a table with a field <code>tag</code> is used. The child elements are
 stored at numbered indexes and white space is ignored.</p>
 
 <table>
@@ -146,8 +152,8 @@ stored at numbered indexes and white space is ignored.</p>
 
 <h3><a name="lua2xr"></a>From Lua to XML-RPC</h3>
 
-<p>A conversion from a Lua object to an XML-RPC can be made
-automatically or explicitly. The automatic conversion rules
+<p>A conversion from a Lua data item or table to an XML-RPC element 
+can be made automatically or explicitly. The automatic conversion rules
 are:</p>
 
 <table>
@@ -187,18 +193,16 @@ are:</p>
     </tr>
 </table>
 
-<p>In case of a table that has numeric keys, the resulting struct will
+<p>Ifn case of a table that has numeric keys, the resulting struct will
 have the string representation of these numbers as keys (e.g.
 <code>"1"</code> instead of <code>1</code>). The library tries to
 convert integral numbers to integer types, otherwise converting
 them to floating point numbers.</p>
 
-<h2><a name="basic"></a>Basic support</h2>
+<h2><a name="functions"></a>Library functions</h2>
 
-<p>The file <code>xmlrpc.lua</code> implements all basic support
-for encoding and decoding XML-RPC messages and for transforming
-data types between the two representations. Following is the list
-of functions.</p>
+<p>The file <code>xmlrpc.lua</code> implements the functions that encode and decode XML-RPC messages and transform
+data types between the Lua and XML-RPC. The functions are:</p>
 
 <dl>
     <dt><a name="clEncode"></a><strong><code>clEncode (method_name [, params]) =&gt; method_call</code></strong></dt>
@@ -292,7 +296,7 @@ real implementations.</p>
 
 <h2><a name="references"></a>References</h2>
 
-<p>Here is a list of related documentation:</p>
+<p>A list of related documentation can be found at:</p>
 
 <ul>
     <li><a href="http://www.xmlrpc.com">http://www.xmlrpc.com</a></li>
