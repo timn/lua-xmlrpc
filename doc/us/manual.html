@@ -201,7 +201,7 @@ them to floating point numbers.</p>
 
 <h2><a name="functions"></a>Library functions</h2>
 
-<p>The file <code>xmlrpc.lua</code> implements the functions that encode and decode XML-RPC messages and transform
+<p>The <code>xmlrpc.lua</code> file implements the functions that encode and decode XML-RPC messages and transform
 data types between the Lua and XML-RPC. The functions are:</p>
 
 <dl>
@@ -258,7 +258,7 @@ data types between the Lua and XML-RPC. The functions are:</p>
 
 <h2><a name="client"></a>Client side</h2>
 
-<p>The file <code>xmlrpc.http.lua</code> implements a simple
+<p>The <code>http.lua</code> file implements a simple
 stand-alone client based on
 <a href="http://www.tecgraf.puc-rio.br/luasocket">LuaSocket 2.0</a>. The
 following function is provided:</p>
@@ -282,25 +282,20 @@ following function is provided:</p>
 over a CGI launcher. This launcher just have to offer a way to
 decode POST data and to send data back to the client.</p>
 
-<p>The file <code>xmlrpc.cgi.lua</code> implements a simple XML-RPC
-server using the package <code>post</code> that can parse incoming
-POST data from the http server. An appropriate environment for
+<p>The <code>tests</code> directory contains a file named 
+<code>cgi.lua</code>, which implements an example of a simple XML-RPC
+server using the package <code>post</code> (which parses incoming
+POST data from the http server). An appropriate environment for
 writing Lua functions is implemented; a new <code>assert</code>
 function generates a XML-RPC fault in case of a false condition; a
 <code>respond</code> function creates the correct header for the
-responses.</p>
-
-<p>The main goal of this file is to give a starting point for other
-real implementations.</p>
+responses. The main goal of <code>cgi.lua</code> is to give a 
+starting point for other implementations.</p>
 
 
 <h2><a name="references"></a>References</h2>
 
-<p>A list of related documentation can be found at:</p>
-
-<ul>
-    <li><a href="http://www.xmlrpc.com">http://www.xmlrpc.com</a></li>
-</ul>
+<p>Related documentation can be found at: <a href="http://www.xmlrpc.com">http://www.xmlrpc.com</a>.</p>
 
 </div> <!-- id="content" -->
 
