@@ -1,4 +1,13 @@
+---------------------------------------------------------------------
+-- XML-RPC server
+-- See Copyright Notice in license.html
+-- $Id$
+---------------------------------------------------------------------
+
 require"xmlrpc"
+require"cgilua"
+
+module("xmlrpc.server")
 
 ---------------------------------------------------------------------
 local function respond (resp)
@@ -11,17 +20,16 @@ local function respond (resp)
 end
 
 ---------------------------------------------------------------------
---[[
 function assert (cond, msg)
 	if not cond then
 		respond (xmlrpc.srvEncode (
 			{ code = 2, message = msg, },
 			true
 		))
-		os.exit() -- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		--os.exit() -- !!!!!!!!!!!
 	end
 end
---]]
+
 cgilua.seterroroutput (function (msg)
 	respond (xmlrpc.srvEncode ({ code = 2, message = msg, }, true))
 end)
@@ -55,40 +63,24 @@ local function callfunc (func, arg_table)
 end
 
 ---------------------------------------------------------------------
-local kepler_home = "http://www.keplerproject.org"
-local kepler_products = { "luasql", "lualdap", "luaexpat", "luaxmlrpc", }
-local kepler_sites = {
-	luasql = kepler_home.."/luasql",
-	lualdap = kepler_home.."/lualdap",
-	luaexpat = kepler_home.."/luaexpat",
-	luaxmlrpc = kepler_home.."/luaxmlrpc",
-}
-
-local __methods
-__methods = {
-	system = {
-		listMethods = function (self)
-			local l = {}
-			for name, obj in pairs (__methods) do
-				for method in pairs (obj) do
-					table.insert (l, name.."."..method)
-				end
-			end
-			return l
-		end,
-	},
-	kepler = {
-		products = function (self) return kepler_products end,
-		site = function (self, prod) return kepler_sites[prod] end,
-	},
-}
+function xmlrpc.server:new()
+  local o = { methods = { } }
+  setmetatable (o, self)
+  self.__index = self
+  return o
+end
 
 ---------------------------------------------------------------------
--- Main
----------------------------------------------------------------------
+function xmlrpc.server:register(name, service)
+  assert (type(name) == "string", "Invalid `name': string expected")
+  self.methods[name] = service
+end
 
-xmlrpc.srvMethods (__methods)
-local func, arg_table = decodedata (cgi[1])
-local ok, result = callfunc (func, arg_table)
-local r = xmlrpc.srvEncode (result, not ok)
-respond (r)
+---------------------------------------------------------------------
+function xmlrpc.server:handle()
+	xmlrpc.srvMethods (self.methods)
+	local func, arg_table = decodedata (cgi[1])
+	local ok, result = callfunc (func, arg_table)
+	local r = xmlrpc.srvEncode (result, not ok)
+	respond (r)
+end

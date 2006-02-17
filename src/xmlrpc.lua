@@ -577,8 +577,12 @@ function srvMethods (tab_or_func)
 			if not ok then
 				return tab_or_func[name]
 			else
-				return function (...)
-					return tab_or_func[obj][method] (obj, unpack (arg))
+				if tab_or_func[obj] and tab_or_func[obj][method] then
+					return function (...)
+						return tab_or_func[obj][method] (obj, unpack (arg))
+					end
+				else
+					return nil
 				end
 			end
 		end
