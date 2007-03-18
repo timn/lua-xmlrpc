@@ -4,8 +4,12 @@
 -- $Id$
 ---------------------------------------------------------------------
 
-require"xmlrpc"
-require"cgilua"
+local assert, pcall, setmetatable, type, unpack = assert, pcall, setmetatable, type, unpack
+local cgilua = require"cgilua"
+local os     = require"os"
+local string = require"string"
+local table  = require"table"
+local xmlrpc = require"xmlrpc"
 
 module("xmlrpc.server")
 

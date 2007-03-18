@@ -1,8 +1,8 @@
 # $Id$
 
-LUA_DIR= /usr/local/share/lua/5.0
+LUA_DIR= /usr/local/share/lua/5.1
 
-LUAS= src/xmlrpc.lua src/http.lua src/server.lua
+LUAS= src/init.lua src/http.lua src/server.lua
 
 
 build clean:

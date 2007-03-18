@@ -13,8 +13,8 @@ Here goes a small description of the files in the distribution
     README              -- This file
     apitest.lua         -- Overall API test script
     httptest.lua        -- Automatic tests over HTTP
-    xmlrpc.lua          -- Source file
-    xmlrpc.http.lua     -- Extension library over HTTP
-    xmlrpc.server.lua   -- Server implementation over CGILua
+    init.lua            -- Source file
+    http.lua            -- Extension library over HTTP
+    server.lua          -- Server implementation over CGILua
 
 $Id$

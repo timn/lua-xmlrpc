@@ -4,11 +4,13 @@
 -- $Id$
 ---------------------------------------------------------------------
 
-require"socket.http"
-require"ltn12"
-require"xmlrpc"
+local error, select, tonumber, tostring, unpack = error, select, tonumber, tostring, unpack
 
-local request = socket.http.request
+local ltn12   = require"ltn12"
+local request = require"socket.http".request
+local string  = require"string"
+local table   = require"table"
+local xmlrpc  = require"xmlrpc"
 
 module("xmlrpc.http")
 
@@ -20,8 +22,9 @@ module("xmlrpc.http")
 --	XML-RPC element).
 ---------------------------------------------------------------------
 function call (url, method, ...)
+	local n = select ('#', ...)
 	local request_sink, tbody = ltn12.sink.table()
-	local request_body = xmlrpc.clEncode(method, unpack (arg))
+	local request_body = xmlrpc.clEncode(method, unpack (..., 1, n))
 	local err, code, headers, status = request {
 		url = url,
 		method = "POST",

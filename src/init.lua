@@ -4,8 +4,8 @@
 -- $Id$
 ---------------------------------------------------------------------
 
-require "lxp"
-require "lxp.lom"
+local lxp = require "lxp"
+local lom = require "lxp.lom"
 
 local assert, error, ipairs, pairs, type, tonumber, unpack = assert, error, ipairs, pairs, type, tonumber, unpack
 local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
@@ -13,11 +13,11 @@ local concat, getn, tinsert = table.concat, table.getn, table.insert
 local ceil = math.ceil
 local parse = lxp.lom.parse
 
-module (arg and arg[1])
+module (...)
 
-_COPYRIGHT = "Copyright (C) 2003-2006 Kepler Project"
+_COPYRIGHT = "Copyright (C) 2003-2007 Kepler Project"
 _DESCRIPTION = "LuaXMLRPC is a library to make remote procedure calls using XML-RPC"
-_VERSION = "LuaXMLRPC 1.0.0"
+_VERSION = "LuaXMLRPC 1.1.0"
 
 ---------------------------------------------------------------------
 -- XML-RPC Parser
