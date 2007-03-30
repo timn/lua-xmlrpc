@@ -7,9 +7,9 @@
 local lxp = require "lxp"
 local lom = require "lxp.lom"
 
-local assert, error, ipairs, pairs, type, tonumber, unpack = assert, error, ipairs, pairs, type, tonumber, unpack
+local assert, error, ipairs, pairs, select, type, tonumber, unpack = assert, error, ipairs, pairs, select, type, tonumber, unpack
 local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
-local concat, getn, tinsert = table.concat, table.getn, table.insert
+local concat, tinsert = table.concat, table.insert
 local ceil = math.ceil
 local parse = lxp.lom.parse
 
@@ -122,7 +122,7 @@ end
 local function x2struct (tab)
 	if tab.tag == "struct" then
 		local res = {}
-		for i = 1, getn (tab) do
+		for i = 1, #tab do
 			if not is_space (tab[i]) then
 				local name, val = x2member (tab[i])
 				res[name] = val
@@ -141,7 +141,7 @@ local function x2array (tab)
 	if tab.tag == "array" then
 		local d = next_tag (tab, "data")
 		local res = {}
-		for i = 1, getn (d) do
+		for i = 1, #d do
 			if not is_space (d[i]) then
 				tinsert (res, x2value (d[i]))
 			end
@@ -424,27 +424,28 @@ function toxml.value (obj)
 end
 
 ---------------------------------------------------------------------
--- @param params_list Table with list of parameters.
+-- @param ... List of parameters.
 -- @return String representing the `params' XML-RPC element.
 ---------------------------------------------------------------------
-function toxml.params (params_list)
-	for i = 1, getn (params_list) do
-		params_list[i] = format (formats.param, toxml.value (params_list[i]))
+function toxml.params (...)
+	local params_list = {}
+	for i = 1, select ("#", ...) do
+		params_list[i] = format (formats.param, toxml.value (select (i, ...)))
 	end
 	return format (formats.params, concat (params_list, '\n      '))
 end
 
 ---------------------------------------------------------------------
 -- @param method String with method's name.
--- @param params_list Table with list of parameters.
+-- @param ... List of parameters.
 -- @return String representing the `methodCall' XML-RPC element.
 ---------------------------------------------------------------------
-function toxml.methodCall (method, params_list)
+function toxml.methodCall (method, ...)
 	local idx = strfind (method, "[^A-Za-z_.:/0-9]")
 	if idx then
 		error (format ("Invalid character `%s'", strsub (method, idx, idx)))
 	end
-	return format (formats.methodCall, method, toxml.params (params_list))
+	return format (formats.methodCall, method, toxml.params (...))
 end
 
 ---------------------------------------------------------------------
@@ -473,7 +474,7 @@ end
 function toxml.methodResponse (ok, params)
 	local resp
 	if ok then
-		resp = toxml.params { params }
+		resp = toxml.params (params)
 	else
 		resp = toxml.fault (params)
 	end
@@ -515,7 +516,7 @@ end
 -- @return String with the XML string/document.
 ---------------------------------------------------------------------
 function clEncode (method, ...)
-	return toxml.methodCall (method, arg)
+	return toxml.methodCall (method, ...)
 end
 
 ---------------------------------------------------------------------
@@ -579,7 +580,7 @@ function srvMethods (tab_or_func)
 			else
 				if tab_or_func[obj] and tab_or_func[obj][method] then
 					return function (...)
-						return tab_or_func[obj][method] (obj, unpack (arg))
+						return tab_or_func[obj][method] (obj, ...)
 					end
 				else
 					return nil
