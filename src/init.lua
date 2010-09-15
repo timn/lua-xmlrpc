@@ -75,13 +75,13 @@ end
 local function x2boolean (tab)
 	if tab.tag == "boolean" then
 		local v = next_nonspace (tab, 1)
-		return tonumber (v) == 1 or false
+		return v == true or v == "true" or tonumber (v) == 1 or false
 	end
 end
 
 ---------------------------------------------------------------------
 local function x2string (tab)
-	return tab.tag == "string" and tab[1]
+	return tab.tag == "string" and (tab[1] or "")
 end
 
 ---------------------------------------------------------------------
@@ -202,6 +202,10 @@ x2value = function (tab)
 		local get = xmlrpc_types[t]
 		if not get then error ("Invalid <"..t.."> element") end
 		return get (next_nonspace (tab))
+        elseif type(n) == "nil" then
+                -- the next best thing is to assume it's an empty string
+               return ""
+
 	end
 end
 
@@ -365,7 +369,14 @@ function toxml.array (val, typ)
 	local et = typ.elemtype
 	local f = format_func (et)
 	for i,v in ipairs (val) do
-		tinsert (ret, format (formats.value, f (v, et)))
+		if et and et ~= "array" then
+			tinsert (ret, format (formats.value, f (v, et)))
+		else
+			local ct,cv = type_val(v)
+			local cf = format_func(ct)
+			tinsert (ret, format (formats.value, cf(cv, ct)))
+		end
+
 	end
 	return format (formats.array, concat (ret, '\n'))
 end
@@ -398,7 +409,7 @@ end
 ---------------------------------------------------------------------
 -- Get type and value of object.
 ---------------------------------------------------------------------
-local function type_val (obj)
+function type_val (obj)
 	local t = type (obj)
 	local v = obj
 	if t == "table" then
