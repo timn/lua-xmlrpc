@@ -1,7 +1,6 @@
 ---------------------------------------------------------------------
 -- XML-RPC over HTTP.
 -- See Copyright Notice in license.html
--- $Id$
 ---------------------------------------------------------------------
 
 local error, tonumber, tostring, unpack = error, tonumber, tostring, unpack

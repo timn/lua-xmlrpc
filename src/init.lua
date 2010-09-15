@@ -1,7 +1,6 @@
 ---------------------------------------------------------------------
 -- XML-RPC implementation for Lua.
 -- See Copyright Notice in license.html
--- $Id$
 ---------------------------------------------------------------------
 
 local lxp = require "lxp"

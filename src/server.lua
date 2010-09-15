@@ -1,7 +1,6 @@
 ---------------------------------------------------------------------
 -- XML-RPC server
 -- See Copyright Notice in license.html
--- $Id$
 ---------------------------------------------------------------------
 
 local assert, pcall, setmetatable, type, unpack = assert, pcall, setmetatable, type, unpack

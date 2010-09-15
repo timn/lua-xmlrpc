@@ -17,4 +17,3 @@ Here goes a small description of the files in the distribution
     http.lua            -- Extension library over HTTP
     server.lua          -- Server implementation over CGILua
 
-$Id$
