@@ -29,7 +29,7 @@ function call (url, method, ...)
 		source = ltn12.source.string (request_body),
 		sink = request_sink,
 		headers = {
-			["User-agent"] = "LuaXMLRPC",
+			["User-agent"] = xmlrpc._PKGNAME .. " " .. xmlrpc._VERSION,
 			["Content-type"] = "text/xml",
 			["content-length"] = tostring (string.len (request_body)),
 		},
