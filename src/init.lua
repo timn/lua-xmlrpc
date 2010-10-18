@@ -19,7 +19,7 @@ _DESCRIPTION = "LuaXMLRPC is a library to make remote procedure calls using XML-
 _PKGNAME = "LuaXMLRPC"
 _VERSION_MAJOR = 1
 _VERSION_MINOR = 2
-_VERSION_MICRO = 0
+_VERSION_MICRO = 1
 _VERSION = _VERSION_MAJOR .. "." .. _VERSION_MINOR .. "." .. _VERSION_MICRO
 
 ---------------------------------------------------------------------
