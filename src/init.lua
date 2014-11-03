@@ -10,7 +10,7 @@ local assert, error, ipairs, pairs, select, type, tonumber, unpack = assert, err
 local format, gsub, strfind, strsub = string.format, string.gsub, string.find, string.sub
 local concat, tinsert = table.concat, table.insert
 local ceil = math.ceil
-local parse = lxp.lom.parse
+local parse = lom.parse
 
 module (...)
 
