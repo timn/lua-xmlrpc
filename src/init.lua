@@ -14,12 +14,12 @@ local parse = lom.parse
 
 module (...)
 
-_COPYRIGHT = "Copyright (C) 2003-2010 Kepler Project"
+_COPYRIGHT = "Copyright (C) 2003-2014 Kepler Project"
 _DESCRIPTION = "LuaXMLRPC is a library to make remote procedure calls using XML-RPC"
 _PKGNAME = "LuaXMLRPC"
 _VERSION_MAJOR = 1
 _VERSION_MINOR = 2
-_VERSION_MICRO = 1
+_VERSION_MICRO = 2
 _VERSION = _VERSION_MAJOR .. "." .. _VERSION_MINOR .. "." .. _VERSION_MICRO
 
 ---------------------------------------------------------------------
