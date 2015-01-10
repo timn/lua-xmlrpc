@@ -278,6 +278,7 @@ local formats = {
 	boolean = "<boolean>%d</boolean>",
 	number = "<double>%d</double>",
 	string = "<string>%s</string>",
+	base64 = "<base64>%s</base64>",
 
 	array = "<array><data>\n%s\n</data></array>",
 	double = "<double>%s</double>",
@@ -319,6 +320,7 @@ local toxml = {}
 toxml.double = function (v,t) return format (formats.double, v) end
 toxml.int = function (v,t) return format (formats.int, v) end
 toxml.string = function (v,t) return format (formats.string, v) end
+toxml.base64 = function (v,t) return format (formats.base64, v) end
 
 ---------------------------------------------------------------------
 -- Build a XML-RPC representation of a boolean.
