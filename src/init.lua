@@ -70,7 +70,7 @@ end
 
 ---------------------------------------------------------------------
 local function x2number (tab)
-	if tab.tag == "int" or tab.tag == "i4" or tab.tag == "double" then
+	if tab.tag == "int" or tab.tag == "i4" or tab.tag == "i8" or tab.tag == "double" then
 		return tonumber (next_nonspace (tab, 1), 10)
 	end
 end
@@ -157,6 +157,7 @@ end
 local xmlrpc_types = {
 	int = x2number,
 	i4 = x2number,
+	i8 = x2number,
 	boolean = x2boolean,
 	string = x2string,
 	double = x2number,
@@ -337,7 +338,7 @@ end
 ---------------------------------------------------------------------
 function toxml.number (v, t)
 	local tt = (type(t) == "table") and t["*type"]
-	if tt == "int" or tt == "i4" then
+	if tt == "int" or tt == "i4" or tt == "i8" then
 		return toxml.int (v, t)
 	elseif tt == "double" then
 		return toxml.double (v, t)
