@@ -70,7 +70,7 @@ end
 
 ---------------------------------------------------------------------
 local function x2number (tab)
-	if tab.tag == "int" or tab.tag == "i4" or tab.tag == "double" then
+	if tab.tag == "int" or tab.tag == "i4" or tab.tag == "i8" or tab.tag == "double" then
 		return tonumber (next_nonspace (tab, 1), 10)
 	end
 end
@@ -157,6 +157,7 @@ end
 local xmlrpc_types = {
 	int = x2number,
 	i4 = x2number,
+	i8 = x2number,
 	boolean = x2boolean,
 	string = x2string,
 	double = x2number,
@@ -277,6 +278,7 @@ local formats = {
 	boolean = "<boolean>%d</boolean>",
 	number = "<double>%d</double>",
 	string = "<string>%s</string>",
+	base64 = "<base64>%s</base64>",
 
 	array = "<array><data>\n%s\n</data></array>",
 	double = "<double>%s</double>",
@@ -318,6 +320,7 @@ local toxml = {}
 toxml.double = function (v,t) return format (formats.double, v) end
 toxml.int = function (v,t) return format (formats.int, v) end
 toxml.string = function (v,t) return format (formats.string, v) end
+toxml.base64 = function (v,t) return format (formats.base64, v) end
 
 ---------------------------------------------------------------------
 -- Build a XML-RPC representation of a boolean.
@@ -337,7 +340,7 @@ end
 ---------------------------------------------------------------------
 function toxml.number (v, t)
 	local tt = (type(t) == "table") and t["*type"]
-	if tt == "int" or tt == "i4" then
+	if tt == "int" or tt == "i4" or tt == "i8" then
 		return toxml.int (v, t)
 	elseif tt == "double" then
 		return toxml.double (v, t)
